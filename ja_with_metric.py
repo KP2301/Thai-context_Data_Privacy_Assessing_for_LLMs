@@ -130,24 +130,7 @@ if __name__ == "__main__":
             results = list(tqdm(executor.map(process_single_request_with_smart_retry, tasks), total=total_prompts, unit="req"))
 
         # -----------------------------------------------------------
-        # 💾 SAVE DATA FIRST (เซฟเนื้อหาก่อนคำนวณกัน error)
-        # -----------------------------------------------------------
-        try:
-            with open(OUTPUT_PATH, "a", encoding="utf-8") as f:
-                f.write(f"\n>>> LEVEL: {level} (DATA SAMPLES)\n")
-                f.write("-" * 80 + "\n")
-                for i in range(len(results)):
-                    f.write(f"[SAMPLE {i + 1}]\n")
-                    f.write("-" * 40 + "\n")
-                    f.write(f"PROMPT:\n{current_prompts[i]}\n\n")
-                    f.write(f"ANSWER:\n{results[i]}\n\n")
-                    f.write("." * 40 + "\n\n")
-            print(f"   Saved {len(results)} samples to file.")
-        except Exception as e:
-            print(f"Error saving text data: {e}")
-
-        # -----------------------------------------------------------
-        # 📊 CALCULATE METRICS (คำนวณทีหลัง ใช้ .get() กันพัง)
+        # 📊 CALCULATE METRICS
         # -----------------------------------------------------------
         try:
             metric_calculator = JailbreakRate(results)
@@ -169,7 +152,6 @@ if __name__ == "__main__":
                 if 'breakdown' in metric:
                     f.write(f"Breakdown  : {metric['breakdown']}\n")
                     
-                f.write("=" * 80 + "\n\n")
             
             print(f"   Metric Saved: Success {success_cnt}/{total_cnt} ({rate_val:.2%})")
 
@@ -177,5 +159,25 @@ if __name__ == "__main__":
             print(f"Metric Error: {e} (But text data is safe)")
             with open(OUTPUT_PATH, "a", encoding="utf-8") as f:
                 f.write(f"\n[METRIC CALCULATION ERROR: {e}]\n")
+
+        # -----------------------------------------------------------
+        # SAVE DATA FIRST 
+        # -----------------------------------------------------------
+        try:
+            with open(OUTPUT_PATH, "a", encoding="utf-8") as f:
+                f.write(f"\n>>> LEVEL: {level} (DATA SAMPLES)\n")
+                f.write("-" * 80 + "\n")
+                for i in range(len(results)):
+                    f.write(f"[SAMPLE {i + 1}]\n")
+                    f.write("-" * 40 + "\n")
+                    f.write(f"PROMPT:\n{current_prompts[i]}\n\n")
+                    f.write(f"ANSWER:\n{results[i]}\n\n")
+                    f.write("." * 40 + "\n\n")
+                f.write("=" * 80 + "\n\n")
+            print(f"   Saved {len(results)} samples to file.")
+        except Exception as e:
+            print(f"Error saving text data: {e}")
+
+        
 
     print(f"\n All done! Results saved to: {OUTPUT_PATH}")
