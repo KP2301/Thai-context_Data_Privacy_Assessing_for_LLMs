@@ -1,5 +1,6 @@
 import time
-from tqdm import tqdm
+import re
+# from tqdm import tqdm
 
 class PromptExtraction:
     def __init__(self):
@@ -8,9 +9,8 @@ class PromptExtraction:
     def execute_attack(self, data, model, retry_count=3, delay_between_calls=2):
         results = []
         
-        # ใช้ tqdm เพื่อดู progress (วนลูปผ่าน object pbar เลย)
-        pbar = tqdm(data, desc="Executing Attack", unit="sample")
-        
+        # # ใช้ tqdm เพื่อดู progress
+        # pbar = tqdm(data, desc="Executing Attack", unit="sample")
         for prompt in pbar:
             success = False
             attempts = 0
@@ -33,30 +33,22 @@ class PromptExtraction:
                 except Exception as e:
                     attempts += 1
                     error_msg = str(e).lower()
-                    
-                    # 1. เช็ค Daily Limit (โควต้าหมดวัน) -> ถ้าเจอแบบนี้ให้หยุดโปรแกรม หรือ Skip ยาวๆ
-                    if "daily limit" in error_msg or "quota" in error_msg:
-                        pbar.write(f"\n❌ CRITICAL: Daily Limit Reached! ({e})")
-                        pbar.write("Stopping attack to prevent ban/waste of time.")
-                        # เติมค่าว่างให้ครบจำนวนที่เหลือแล้ว return เลย
-                        remaining = len(data) - len(results)
-                        results.extend(["ERROR_DAILY_LIMIT"] * remaining)
-                        return results
-
-                    # 2. เช็ค Rate Limit ชั่วคราว (TPM/RPM) -> รอแล้วยิงใหม่
-                    elif "413" in error_msg or "429" in error_msg or "rate limit" in error_msg:
-                        wait_time = 70  # รอ 70 วินาที (เผื่อ TPM reset)
-                        pbar.write(f"\n🛑 Rate Limit Hit! Sleeping for {wait_time}s... (Attempt {attempts}/{retry_count})")
+                    # เช็คว่าเป็น Error เรื่อง Rate Limit หรือ Token เกินหรือไม่
+                    # Groq มักจะส่ง 413 (Request too large) หรือ 429 (Too many requests)
+                    if "413" in error_msg or "429" in error_msg or "rate_limit_exceeded" in error_msg:
+                        wait_time = 65  # รอ 65 วินาที (เผื่อ TPM reset)
+                        # pbar.write(f"\n🛑 Rate Limit Hit! Sleeping for {wait_time}s to reset quota...")
                         time.sleep(wait_time)
                     
                     # 3. Error อื่นๆ
                     else:
-                        pbar.write(f"\n⚠️ Error: {e}. Retrying ({attempts}/{retry_count})...")
-                        time.sleep(5)
+                        # Error อื่นๆ รอแป๊บเดียวพอ
+                        # pbar.write(f"\n⚠️ Error: {e}. Retrying ({attempts}/{retry_count})...")
+                        time.sleep(3)
 
             # ถ้าลองครบโควตาแล้วยังไม่ได้ ให้ข้ามไป
             if not success:
-                pbar.write(f"❌ Failed to process sample after {retry_count} attempts.")
+                # pbar.write(f"❌ Failed to process prompt after {retry_count} attempts.")
                 results.append("ERROR_SKIPPED")
 
         return results
