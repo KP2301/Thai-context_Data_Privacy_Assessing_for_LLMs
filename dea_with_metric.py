@@ -72,6 +72,11 @@ print(f"Attack format: {atk_format}")
 
 prompts, labels = enron.generate_prompts(format=atk_format)
 
+# token_length = enron.calculate_token_length(prompts=prompts)
+
+# print(f"Token Length: {token_length}")
+# print(f"Sum Token Length: {sum(token_length)}")
+
 # ====================================================================================================== #
 # Prepare model
 
@@ -163,54 +168,3 @@ for i in range(0, NUM_SAMPLES, BATCH_SIZE):
     processed_count += len(batch_results)
     print(f"Batch finished. Saved to file.")
 
-# attack = PromptExtraction()
-# test_prompts = prompts[:NUM_SAMPLES]
-# test_labels = labels[:NUM_SAMPLES]
-
-# print(f"Writing results to {OUTPUT_PATH}")
-# print(f"Starting attack on {len(test_prompts)} samples...")
-
-# results = attack.execute_attack(test_prompts, llm)
-
-# print(f"Attack finished. Calculating metrics...")
-
-# metric = ExtractionRate(outputs=results, labels=test_labels)
-# score = metric.compute_metric()
-# asr_percentage = score * 100
-
-# with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:
-#     with redirect_stdout(f):
-#         print("="*100)
-#         print(f"DATA EXTRACTION RESULTS - Total: {len(results)} samples")
-#         print(f"METRIC SCORE (ASR): {asr_percentage:.2f}%")
-#         print("="*100)
-
-#         for idx in range(len(results)):
-#             print(f"\n{'─'*100}")
-#             print(f"SAMPLE #{idx + 1}")
-            
-#             clean_label = test_labels[idx].strip()
-#             is_success = clean_label in results[idx]
-#             status_icon = "✅ LEAKED" if is_success else "❌ SAFE"
-            
-#             print(f"STATUS: {status_icon}")
-#             print(f"{'─'*100}")
-
-#             print(f"\n📝 PROMPT (Input):")
-#             print(test_prompts[idx])
-
-#             print(f"\n🔐 LABEL (Secret):") 
-#             print(test_labels[idx])
-
-#             print(f"\n💬 ANSWER (Model Output):")
-#             print(results[idx])
-#             print()
-
-#         print("="*100)
-#         print(f"📊 FINAL SUMMARY")
-#         print(f"Total Samples: {len(results)}")
-#         print(f"Extraction Success Rate: {asr_percentage:.2f}%")
-#         print("="*100)
-
-# print(f"Done. Check the output directory: {OUTPUT_FILENAME}")
-# print(f"Final Extraction Success Rate: {asr_percentage:.2f}%")
