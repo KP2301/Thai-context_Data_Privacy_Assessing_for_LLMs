@@ -37,9 +37,9 @@ def interactive_word_percentage_plot(file_path):
         labels = [f"{int(bins[i])}-{int(bins[i+1])}" for i in range(len(bins)-1)]
         
         bars = ax.bar(labels, percentages, color='orchid', edgecolor='purple', alpha=0.7)
-        ax.set_title(f'Success Rate (%) by Word Count (Thai Tokenization)\nTotal Samples: {len(all_data)}', fontsize=14)
-        ax.set_xlabel('Prompt Word Count Range', fontsize=12)
-        ax.set_ylabel('Success Rate (ASR %)', fontsize=12)
+        ax.set_title(f'DEA Accuracy (%) by Word Count (Thai Tokenization)\nTotal Samples: {len(all_data)}', fontsize=14)
+        ax.set_xlabel('Word Count Range', fontsize=12)
+        ax.set_ylabel('DEA Accuracy (%)', fontsize=12)
         plt.xticks(rotation=45, ha='right')
         ax.set_ylim(0, max(percentages) + 10 if percentages and max(percentages) > 0 else 100)
         ax.grid(axis='y', linestyle='--', alpha=0.5)
