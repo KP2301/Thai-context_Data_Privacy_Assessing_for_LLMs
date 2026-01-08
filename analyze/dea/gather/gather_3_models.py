@@ -16,7 +16,7 @@ def final_merge_all_models(folder_path, output_filename="FINAL_TOTAL_REPORT.txt"
     print(f"📂 กำลังเริ่มรวมผลลัพธ์จาก {len(files)} ไฟล์...")
 
     # Pattern สำหรับดึง Sample พร้อมเนื้อหาทั้งหมด
-    sample_pattern = re.compile(r'(SAMPLE #\d+.*?)(?=SAMPLE #\d+|################|====================|$)', re.DOTALL)
+    sample_pattern = re.compile(r'(SAMPLE #\d+.*?)(?=SAMPLE #\d+|################|$)', re.DOTALL)
 
     for filename in files:
         file_path = os.path.join(folder_path, filename)
@@ -65,6 +65,6 @@ def final_merge_all_models(folder_path, output_filename="FINAL_TOTAL_REPORT.txt"
     print(f"📈 ASR ภาพรวม: {asr_percentage:.2f}%")
     print(f"📄 บันทึกไฟล์รวมไว้ที่: {output_path}")
 
-target_folder = r"D:\CMU\Y4\Project\dea_result\prefix\results\language\casual" 
+target_folder = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\results_editted\language\semi-formal" 
 
 final_merge_all_models(target_folder)

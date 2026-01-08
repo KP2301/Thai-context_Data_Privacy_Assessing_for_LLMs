@@ -21,7 +21,7 @@ def merge_attack_logs_full(folder_path, max_prompts=3050):
 
     # 2. ใช้ Regex เพื่อดึง Block ของแต่ละ Sample แบบเต็มๆ
     # Pattern นี้จะจับตั้งแต่ SAMPLE # ไปจนถึงก่อนเริ่ม SAMPLE # ตัวถัดไป
-    sample_pattern = re.compile(r'(SAMPLE #\d+.*?)(?=SAMPLE #\d+|######################################## BATCH REPORT|====================|$)', re.DOTALL)
+    sample_pattern = re.compile(r'(SAMPLE #\d+.*?)(?=SAMPLE #\d+|######################################## BATCH REPORT|$)', re.DOTALL)
 
     for filename in files:
         file_path = os.path.join(folder_path, filename)

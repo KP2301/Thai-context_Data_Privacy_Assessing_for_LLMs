@@ -10,6 +10,13 @@ def interactive_percentage_plot(folder_path):
         print(f"❌ ไม่พบโฟลเดอร์: {folder_path}")
         return
 
+    # --- ส่วนจัดการชื่อไฟล์สำหรับ Save ---
+    # ดึงชื่อโฟลเดอร์สุดท้าย (เช่น 'casual') มาตั้งเป็นชื่อไฟล์
+    folder_name = os.path.basename(os.path.normpath(folder_path))
+    save_filename = f"{folder_name}_graph.png"
+    save_path = os.path.join(folder_path, save_filename)
+    # ----------------------------------
+
     # หาไฟล์ที่ขึ้นต้นด้วย "token_counted_" ในโฟลเดอร์
     files = list(Path(folder_path).glob("token_counted_*.txt"))
     
@@ -17,23 +24,14 @@ def interactive_percentage_plot(folder_path):
         print(f"⚠ ไม่พบไฟล์ที่ขึ้นต้นด้วย 'token_counted_' ในโฟลเดอร์: {folder_path}")
         return
     
-    print(f"📂 พบไฟล์ {len(files)} ไฟล์:")
-    for f in files:
-        print(f"  - {f.name}")
-    
-    # เก็บข้อมูลแต่ละโมเดล
     model_data = {}
     max_token_overall = 0
     
     for file_path in files:
-        # ดึงชื่อโมเดลจากชื่อไฟล์ (token_counted_modelname.txt -> modelname)
         model_name = file_path.stem.replace("token_counted_", "")
-        
-        print(f"\n📖 กำลังอ่านไฟล์: {file_path.name}")
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        # ดึงข้อมูล STATUS และ PROMPT TOKENS
         pattern = re.compile(r'STATUS:.*?(✅|❌).*?PROMPT TOKENS: (\d+)', re.DOTALL)
         matches = pattern.findall(content)
         
@@ -43,62 +41,49 @@ def interactive_percentage_plot(folder_path):
             all_data.append((int(token_count), is_success))
 
         if not all_data:
-            print(f"⚠ ไม่พบข้อมูลใน {file_path.name}")
             continue
         
         all_tokens = np.array([d[0] for d in all_data])
         success_flags = np.array([d[1] for d in all_data])
-        max_token_val = max(all_tokens)
-        max_token_overall = max(max_token_overall, max_token_val)
+        max_token_overall = max(max_token_overall, max(all_tokens))
         
         model_data[model_name] = {
             'tokens': all_tokens,
             'success': success_flags,
             'total': len(all_data)
         }
-        
-        print(f"✅ โหลดข้อมูล {model_name}: {len(all_data)} samples")
     
     if not model_data:
         print("❌ ไม่มีข้อมูลที่ใช้งานได้")
         return
     
     # ตั้งค่ากราฟ
-    initial_bin_size = 200
+    initial_bin_size = 1000
     fig, ax = plt.subplots(figsize=(14, 8))
     plt.subplots_adjust(bottom=0.25)
     
-    # สีสำหรับแต่ละโมเดล
     colors = ['#2E86AB', '#A23B72', '#F18F01', '#06A77D', '#D62828', '#8338EC']
     
-    def update_graph(bin_size):
+    # แยกฟังก์ชันวาดกราฟออกมาเพื่อให้เรียกใช้ได้ทั้งตอน Save และตอน Update
+    def draw_plot_content(bin_size):
         ax.clear()
         bin_size = int(bin_size)
-        
         bins = np.arange(0, max_token_overall + bin_size + 1, bin_size)
         bin_centers = (bins[:-1] + bins[1:]) / 2
         
-        # วาดเส้นสำหรับแต่ละโมเดล
         for idx, (model_name, data) in enumerate(model_data.items()):
             all_tokens = data['tokens']
             success_flags = data['success']
-            
-            # นับจำนวนทั้งหมดและจำนวนที่สำเร็จในแต่ละช่วง
             total_counts, _ = np.histogram(all_tokens, bins=bins)
             success_counts, _ = np.histogram(all_tokens[success_flags == 1], bins=bins)
             
-            # คำนวณเปอร์เซ็นต์
-            percentages = []
-            for s, t in zip(success_counts, total_counts):
-                percentages.append((s / t * 100) if t > 0 else np.nan)
-            
-            # วาดเส้น
+            percentages = [(s / t * 100) if t > 0 else np.nan for s, t in zip(success_counts, total_counts)]
             color = colors[idx % len(colors)]
             ax.plot(bin_centers, percentages, marker='o', linewidth=2.5, 
                    label=f"{model_name} (n={data['total']})", 
                    color=color, markersize=6, alpha=0.8)
         
-        ax.set_title('DEA Accuracy (%) by Token Range - Multi-Model Comparison', 
+        ax.set_title(f'DEA Accuracy (%) by Token Range - {folder_name.capitalize()}', 
                     fontsize=15, fontweight='bold', pad=20)
         ax.set_xlabel('Token Range (midpoint)', fontsize=13)
         ax.set_ylabel('DEA Accuracy (%)', fontsize=13)
@@ -106,37 +91,31 @@ def interactive_percentage_plot(folder_path):
         ax.grid(True, linestyle='--', alpha=0.3)
         ax.legend(loc='best', fontsize=10, framealpha=0.9)
         
-        # แสดง bin labels
         labels = [f"{int(bins[i])}-{int(bins[i+1])}" for i in range(len(bins)-1)]
         ax.set_xticks(bin_centers)
-        ax.set_xticklabels(labels, rotation=45, ha='right', fontsize=9)
-        
+        ax.set_xticklabels(labels, fontsize=9)
+
+    # 1. วาดเนื้อหาครั้งแรก
+    draw_plot_content(initial_bin_size)
+    
+    # 2. บันทึกรูปภาพ (บันทึกตอนนี้ Slider จะยังไม่ปรากฏในรูป)
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    print(f"✅ บันทึกรูปภาพเรียบร้อยแล้ว: {save_path}")
+
+    # 3. สร้าง Slider สำหรับการใช้งาน Interactive
+    ax_slider = plt.axes([0.2, 0.08, 0.6, 0.03])
+    slider = Slider(ax=ax_slider, label='Adjust Bin Size  ', valmin=50, valmax=2000, 
+                    valinit=initial_bin_size, valstep=50, color='steelblue')
+    
+    def update(val):
+        draw_plot_content(val)
         fig.canvas.draw_idle()
     
-    # สร้าง Slider
-    ax_slider = plt.axes([0.2, 0.08, 0.6, 0.03])
-    slider = Slider(
-        ax=ax_slider,
-        label='Adjust Bin Size  ',
-        valmin=50,
-        valmax=2000,
-        valinit=initial_bin_size,
-        valstep=50,
-        color='steelblue'
-    )
-    
-    slider.on_changed(update_graph)
-    
-    # แสดงผลครั้งแรก
-    update_graph(initial_bin_size)
+    slider.on_changed(update)
     
     print("\n✅ กราฟ Interactive พร้อมทำงาน!")
-    print("💡 ใช้ Slider เพื่อปรับขนาด Bin และดูความแตกต่างระหว่างโมเดล")
     plt.show()
 
-# ==========================================
-# ระบุ Path ของโฟลเดอร์ที่มีไฟล์ token_counted_*.txt
-# ==========================================
-target_folder_path = r"D:\CMU\Y4\Project\dea_result\prefix\results\token\casual"
-
+# Path ของโฟลเดอร์
+target_folder_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\results_editted\token\semi-formal"
 interactive_percentage_plot(target_folder_path)
