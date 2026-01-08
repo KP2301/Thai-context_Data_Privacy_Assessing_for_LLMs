@@ -6,6 +6,12 @@ import numpy as np
 
 def interactive_word_percentage_plot(file_path):
     print(f"📖 กำลังวิเคราะห์ข้อมูลคำจาก: {file_path}")
+    
+    # ดึง Directory เพื่อใช้สำหรับบันทึกไฟล์
+    output_dir = os.path.dirname(file_path)
+    file_name = os.path.basename(file_path).replace('.txt', '.png')
+    save_path = os.path.join(output_dir, f"plot_{file_name}")
+
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
@@ -13,6 +19,10 @@ def interactive_word_percentage_plot(file_path):
     pattern = re.compile(r'STATUS:.*?(✅|❌).*?PROMPT WORDS: (\d+)', re.DOTALL)
     matches = pattern.findall(content)
     
+    if not matches:
+        print("❌ ไม่พบข้อมูลในไฟล์")
+        return
+
     all_data = []
     for status_icon, word_count in matches:
         all_data.append((int(word_count), 1 if status_icon == "✅" else 0))
@@ -21,7 +31,8 @@ def interactive_word_percentage_plot(file_path):
     success_flags = np.array([d[1] for d in all_data])
     max_word_val = max(all_words)
 
-    initial_bin_size = 50 # จำนวนคำมักจะน้อยกว่าจำนวน token เลยตั้งค่าเริ่มต้นเล็กลง
+    # ตั้งค่าเริ่มต้น
+    initial_bin_size = 500 
     fig, ax = plt.subplots(figsize=(13, 7))
     plt.subplots_adjust(bottom=0.25)
 
@@ -37,11 +48,11 @@ def interactive_word_percentage_plot(file_path):
         labels = [f"{int(bins[i])}-{int(bins[i+1])}" for i in range(len(bins)-1)]
         
         bars = ax.bar(labels, percentages, color='orchid', edgecolor='purple', alpha=0.7)
-        ax.set_title(f'DEA Accuracy (%) by Word Count (Thai Tokenization)\nTotal Samples: {len(all_data)}', fontsize=14)
+        ax.set_title(f'DEA Accuracy (%) by Word Count \n(Greatest word count: {max_word_val})', fontsize=14)
         ax.set_xlabel('Word Count Range', fontsize=12)
         ax.set_ylabel('DEA Accuracy (%)', fontsize=12)
-        plt.xticks(rotation=45, ha='right')
-        ax.set_ylim(0, max(percentages) + 10 if percentages and max(percentages) > 0 else 100)
+        plt.setp(ax.get_xticklabels())
+        ax.set_ylim(0, 110)
         ax.grid(axis='y', linestyle='--', alpha=0.5)
 
         for i, bar in enumerate(bars):
@@ -52,10 +63,24 @@ def interactive_word_percentage_plot(file_path):
                         ha='center', va='bottom', fontsize=8)
         fig.canvas.draw_idle()
 
+    # สร้าง Slider สำหรับหน้าจอ Interactive
     ax_slider = plt.axes([0.2, 0.05, 0.6, 0.03])
-    slider = Slider(ax=ax_slider, label='Bin Size (Words) ', valmin=10, valmax=500, valinit=initial_bin_size, valstep=10, color='orchid')
+    slider = Slider(ax=ax_slider, label='Bin Size ', valmin=50, valmax=1000, valinit=initial_bin_size, valstep=50, color='orchid')
     slider.on_changed(update_graph)
+
+
     update_graph(initial_bin_size)
+    
+    # ซ่อน Slider ชั่วคราว
+    ax_slider.set_visible(False)
+    
+    # บันทึกรูปภาพ (bbox_inches='tight' ช่วยตัดขอบขาวที่ไม่ได้ใช้ออก)
+    plt.savefig(save_path, bbox_inches='tight', dpi=300)
+    print(f"✅ บันทึกรูปภาพเรียบร้อยที่: {save_path}")
+    
+    # แสดง Slider กลับมาเพื่อใช้งานต่อในหน้าต่าง Popup
+    ax_slider.set_visible(True)
+
     plt.show()
 
 # เรียกใช้งาน
