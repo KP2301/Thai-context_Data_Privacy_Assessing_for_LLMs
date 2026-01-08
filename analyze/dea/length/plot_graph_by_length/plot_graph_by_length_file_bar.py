@@ -59,5 +59,5 @@ def interactive_word_percentage_plot(file_path):
     plt.show()
 
 # เรียกใช้งาน
-target_file_path = r"C:\Project\LLM-PBE_VS\dea_result\prefix\th\casual\word_counted_token_counted_FINAL_TOTAL_REPORT.txt"
+target_file_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\length\casual\word_counted_casual_kimi.txt"
 interactive_word_percentage_plot(target_file_path)
