@@ -72,6 +72,6 @@ def merge_attack_logs_full(folder_path, max_prompts=3050):
     print(f"✅ รวมไฟล์เสร็จสิ้น!")
     print(f"📄 เนื้อหาถูกบันทึกไว้ที่: {output_path}")
 
-target_folder = r"D:\CMU\Y4\Project\dea_result\prefix\th\meta-llama-llama-4-maverick-17b-128e-instruct\casual" 
+target_folder = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\th\llama-3.1-8b-instant\informal" 
 
 merge_attack_logs_full(target_folder)

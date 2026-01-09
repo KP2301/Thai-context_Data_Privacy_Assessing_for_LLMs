@@ -101,5 +101,5 @@ def interactive_combined_line_plot(folder_path):
     plt.show()
 
 # --- เรียกใช้งาน ---
-target_folder = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\length\semi-formal"
+target_folder = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\length\informal"
 interactive_combined_line_plot(target_folder)

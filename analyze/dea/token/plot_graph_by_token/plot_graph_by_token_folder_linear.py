@@ -117,5 +117,5 @@ def interactive_percentage_plot(folder_path):
     plt.show()
 
 # Path ของโฟลเดอร์
-target_folder_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\token\semi-formal"
+target_folder_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\token\informal"
 interactive_percentage_plot(target_folder_path)

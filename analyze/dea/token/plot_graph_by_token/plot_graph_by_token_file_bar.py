@@ -92,5 +92,5 @@ def interactive_percentage_plot(file_path):
     plt.show()
 
 # Path ของไฟล์
-target_file_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\results_editted\token\semi-formal\token_counted_semi_formal_meta.txt"
+target_file_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\token\informal\token_counted_informal_meta.txt"
 interactive_percentage_plot(target_file_path)
