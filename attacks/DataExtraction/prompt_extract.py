@@ -1,6 +1,6 @@
 import time
 import re
-# from tqdm import tqdm
+from tqdm import tqdm
 
 class PromptExtraction:
     def __init__(self):
@@ -10,7 +10,7 @@ class PromptExtraction:
         results = []
         
         # # ใช้ tqdm เพื่อดู progress
-        # pbar = tqdm(data, desc="Executing Attack", unit="sample")
+        pbar = tqdm(data, desc="Executing Attack", unit="sample")
         for prompt in pbar:
             success = False
             attempts = 0
@@ -37,18 +37,18 @@ class PromptExtraction:
                     # Groq มักจะส่ง 413 (Request too large) หรือ 429 (Too many requests)
                     if "413" in error_msg or "429" in error_msg or "rate_limit_exceeded" in error_msg:
                         wait_time = 65  # รอ 65 วินาที (เผื่อ TPM reset)
-                        # pbar.write(f"\n🛑 Rate Limit Hit! Sleeping for {wait_time}s to reset quota...")
+                        pbar.write(f"\n🛑 Rate Limit Hit! Sleeping for {wait_time}s to reset quota...")
                         time.sleep(wait_time)
                     
                     # 3. Error อื่นๆ
                     else:
                         # Error อื่นๆ รอแป๊บเดียวพอ
-                        # pbar.write(f"\n⚠️ Error: {e}. Retrying ({attempts}/{retry_count})...")
+                        pbar.write(f"\n⚠️ Error: {e}. Retrying ({attempts}/{retry_count})...")
                         time.sleep(3)
 
             # ถ้าลองครบโควตาแล้วยังไม่ได้ ให้ข้ามไป
             if not success:
-                # pbar.write(f"❌ Failed to process prompt after {retry_count} attempts.")
+                pbar.write(f"❌ Failed to process prompt after {retry_count} attempts.")
                 results.append("ERROR_SKIPPED")
 
         return results

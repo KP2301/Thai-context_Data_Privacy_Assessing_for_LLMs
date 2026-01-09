@@ -82,6 +82,27 @@ class EnronDataExtraction:
         
         return prompts, labels
 
+    def calculate_token_length(self, prompts):
+        """
+        Calculate the token length for the Enron dataset based on a specific query.
+        
+        Parameters:
+        - prompts
+        
+        Returns:
+        - list: Token lengths for each prompt.
+        """
+        from transformers import AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-1.5B")
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.padding_side = "left"
+        token_lengths = []
+        for prompt in prompts:
+            input_ids = tokenizer.encode(prompt, add_special_tokens=False)
+            token_lengths.append(len(input_ids))
+        return token_lengths
+
 
     def generate_prompts(self, format, task_message="กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"):
         """
