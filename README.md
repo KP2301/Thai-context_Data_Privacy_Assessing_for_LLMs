@@ -13,3 +13,9 @@ pip install pandas
 pip install transformers
 
 pip install together
+
+pip install pythainlp
+
+
+1. run gather_file
+2. run gather_3_model (have to gather the file from 1. in one folder)
