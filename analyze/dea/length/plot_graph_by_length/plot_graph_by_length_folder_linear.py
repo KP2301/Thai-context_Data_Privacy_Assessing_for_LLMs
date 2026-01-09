@@ -73,7 +73,7 @@ def interactive_combined_line_plot(folder_path):
         ax.set_ylabel('DEA Accuracy (%)', fontsize=13)
         ax.set_xticks(x_indices)
         ax.set_xticklabels(labels)
-        ax.set_ylim(-5, 105)
+        ax.set_ylim(-5, 80)
         ax.grid(True, linestyle='--', alpha=0.6)
         
         # Legend ขวาบนในกราฟ
@@ -101,5 +101,5 @@ def interactive_combined_line_plot(folder_path):
     plt.show()
 
 # --- เรียกใช้งาน ---
-target_folder = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\length\casual"
+target_folder = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\length\semi-formal"
 interactive_combined_line_plot(target_folder)

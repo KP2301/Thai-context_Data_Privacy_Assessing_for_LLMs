@@ -52,7 +52,7 @@ def interactive_word_percentage_plot(file_path):
         ax.set_xlabel('Word Count Range', fontsize=12)
         ax.set_ylabel('DEA Accuracy (%)', fontsize=12)
         plt.setp(ax.get_xticklabels())
-        ax.set_ylim(0, 110)
+        ax.set_ylim(0, max(percentages) + 5 if percentages and max(percentages) > 0 else 100)
         ax.grid(axis='y', linestyle='--', alpha=0.5)
 
         for i, bar in enumerate(bars):
@@ -84,5 +84,5 @@ def interactive_word_percentage_plot(file_path):
     plt.show()
 
 # เรียกใช้งาน
-target_file_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\length\casual\word_counted_casual_kimi.txt"
+target_file_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\length\semi-formal\word_counted_semi_formal_meta.txt"
 interactive_word_percentage_plot(target_file_path)

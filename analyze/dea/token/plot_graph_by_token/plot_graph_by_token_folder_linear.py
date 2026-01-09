@@ -87,7 +87,7 @@ def interactive_percentage_plot(folder_path):
                     fontsize=15, fontweight='bold', pad=20)
         ax.set_xlabel('Token Range (midpoint)', fontsize=13)
         ax.set_ylabel('DEA Accuracy (%)', fontsize=13)
-        ax.set_ylim(0, 105)
+        ax.set_ylim(0, 80)
         ax.grid(True, linestyle='--', alpha=0.3)
         ax.legend(loc='best', fontsize=10, framealpha=0.9)
         
@@ -117,5 +117,5 @@ def interactive_percentage_plot(folder_path):
     plt.show()
 
 # Path ของโฟลเดอร์
-target_folder_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\results_editted\token\semi-formal"
+target_folder_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\token\semi-formal"
 interactive_percentage_plot(target_folder_path)
