@@ -788,26 +788,3 @@ class Jailbreak_th_data:
                 prompts[key][level] = textwrap.dedent(text).strip()
 
         return prompts
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
