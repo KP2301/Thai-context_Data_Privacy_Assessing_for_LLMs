@@ -80,8 +80,8 @@ def create_frequency_graph(directory_path='.'):
     
     # ตกแต่งกราฟ
     ax.set_xlabel('Position (1-15)', fontsize=13, fontweight='bold')
-    ax.set_ylabel('Frequency (ความถี่)', fontsize=13, fontweight='bold')
-    ax.set_title('Success Indices Frequency Distribution (Modulo 15)\nรวมจากทั้ง 15 ไฟล์', 
+    ax.set_ylabel('Frequency', fontsize=13, fontweight='bold')
+    ax.set_title('Success Indices Frequency Distribution', 
                  fontsize=15, fontweight='bold', pad=20)
     ax.set_xticks(positions)
     ax.set_xticklabels(positions, fontsize=11)
