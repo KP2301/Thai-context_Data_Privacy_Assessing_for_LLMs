@@ -46,6 +46,6 @@ def add_token_count_to_report(input_file_path, model_name="Qwen/Qwen2.5-1.5B"):
     print(f"✅ เสร็จสมบูรณ์!")
     print(f"📄 บันทึกไฟล์ที่มีการระบุ Token แล้วที่: {output_path}")
 
-target_file = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\language\informal\informal_meta.txt" 
+target_file = r"./" 
 
 add_token_count_to_report(target_file)

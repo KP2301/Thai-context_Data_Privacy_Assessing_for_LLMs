@@ -99,6 +99,6 @@ def create_dea_accuracy_chart(folder_path, output_filename='dea_accuracy_chart.p
     plt.show()
 
 
-folder_path = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\language\final_total_result"
+folder_path = r"./"
 
 create_dea_accuracy_chart(folder_path, output_filename='dea_accuracy_by_language.png')

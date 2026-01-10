@@ -119,6 +119,6 @@ def create_frequency_graph(directory_path='.'):
     print(f"ค่าน้อยที่สุด: {min(frequencies)} ครั้ง (ตำแหน่ง {frequencies.index(min(frequencies)) + 1})")
 
 if __name__ == "__main__":
-    directory = "E:\\project-Backup\\LLM-PBE_VS\\ja_result"
+    directory = ""
     
     create_frequency_graph(directory)

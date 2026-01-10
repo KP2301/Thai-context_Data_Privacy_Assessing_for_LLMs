@@ -139,7 +139,7 @@ def create_benchmark_graph(directory_path='.'):
 
 if __name__ == "__main__":
     # เปลี่ยนเป็น path ที่เก็บไฟล์ของคุณ
-    directory = "E:\\project-Backup\\LLM-PBE_VS\\ja_result"  # โฟลเดอร์ปัจจุบัน
+    directory = "./"  # โฟลเดอร์ปัจจุบัน
     
     # หรือระบุ path เฉพาะ เช่น
     # directory = "/path/to/your/files"

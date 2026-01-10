@@ -35,5 +35,5 @@ def add_word_count_to_report(input_file_path):
     print(f"✅ เพิ่มจำนวนคำเรียบร้อย! ไฟล์ใหม่อยู่ที่: {output_path}")
 
 # ระบุ Path ไฟล์ที่มีข้อมูล Token อยู่แล้ว
-target_file = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\token\informal\token_counted_informal_meta.txt"
+target_file = r"./"
 add_word_count_to_report(target_file)
