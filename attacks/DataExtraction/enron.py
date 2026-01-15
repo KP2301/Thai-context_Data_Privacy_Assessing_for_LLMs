@@ -5,25 +5,59 @@ def get_local_domain(email):
     return email.split('@')
 
 class EnronDataExtraction:
-    def __init__(self, data_path="path_to_enron_data"):
+    def __init__(self, data_path="path_to_enron_data", language_level="informal"):
         """
         Initialize the Enron dataset.
         
         Parameters:
         - data_path (str): The file path to the Enron dataset. Default is a placeholder.
+        - language_level (str): The language formality level (ceremonial, formal, semi_formal, informal, casual)
         """
         
         self.data_path = data_path
-        self.context = load_jsonl(os.path.join(data_path, "informal.jsonl"))
+        self.language_level = language_level
+        
+        # โหลดไฟล์ context ตามระดับภาษาที่เลือก
+        context_file = os.path.join(data_path, "context_thai_five_hiarchy", f"{language_level}.jsonl")
+        
+        # ตรวจสอบว่าไฟล์มีอยู่จริง
+        if not os.path.exists(context_file):
+            print(f"Warning: {context_file} not found. Falling back to informal.jsonl")
+            context_file = os.path.join(data_path, "informal.jsonl")
+        
+        self.context = load_jsonl(context_file)
+        print(f"✅ Loaded context from: {context_file}")
+        
+        # โหลดไฟล์อื่นๆ ตามปกติ
         self.email2name_json = load_jsonl(os.path.join(data_path, "email2name.jsonl"))
         self.email2name = {}
         for item in self.email2name_json:
             self.email2name[item['email']] = item['name']
-            
-        self.few_shot_known_domain = load_jsonl(os.path.join(data_path, "five_shot.jsonl"))
-        self.few_shot_unknown_domain = load_jsonl(os.path.join(data_path, "five_shot_non_domain.jsonl"))
+        
+        # โหลด few-shot data (อาจจะต้องแก้ตรงนี้ด้วยถ้าต้องการ few-shot ตามระดับภาษา)
+        few_shot_path = os.path.join(data_path, "context_thai_five_hiarchy")
+        
+        # ตรวจสอบว่ามีไฟล์ few-shot สำหรับระดับภาษานี้หรือไม่
+        few_shot_known_file = os.path.join(few_shot_path, f"{language_level}_five_shot.jsonl")
+        few_shot_unknown_file = os.path.join(few_shot_path, f"{language_level}_five_shot_non_domain.jsonl")
+        
+        if os.path.exists(few_shot_known_file):
+            self.few_shot_known_domain = load_jsonl(few_shot_known_file)
+            print(f"✅ Loaded few-shot known domain from: {few_shot_known_file}")
+        else:
+            # Fallback to default
+            self.few_shot_known_domain = load_jsonl(os.path.join(data_path, "five_shot.jsonl"))
+            print(f"⚠️  Using default five_shot.jsonl")
+        
+        if os.path.exists(few_shot_unknown_file):
+            self.few_shot_unknown_domain = load_jsonl(few_shot_unknown_file)
+            print(f"✅ Loaded few-shot unknown domain from: {few_shot_unknown_file}")
+        else:
+            # Fallback to default
+            self.few_shot_unknown_domain = load_jsonl(os.path.join(data_path, "five_shot_non_domain.jsonl"))
+            print(f"⚠️  Using default five_shot_non_domain.jsonl")
     
-    def get_prompts_few_shot(self, k_shot=0, domain_known=False,  pp='d'):
+    def get_prompts_few_shot(self, k_shot=0, domain_known=False, pp='d'):
 
         assert k_shot >= 0 and k_shot <= 5
 
@@ -59,7 +93,7 @@ class EnronDataExtraction:
                 prompts.append(prompt)
                 labels.append(email)
         elif k_shot > 0:
-            few_shot_dict = self.few_shot_known_domain  if domain_known==True else self.few_shot_unknown_domain
+            few_shot_dict = self.few_shot_known_domain if domain_known==True else self.few_shot_unknown_domain
 
             for item in few_shot_dict:
                 email= item['target']
@@ -78,7 +112,6 @@ class EnronDataExtraction:
                 prompts.append(prompt)
                 labels.append(email)
         
-        
         return prompts, labels
 
 
@@ -90,9 +123,10 @@ class EnronDataExtraction:
         - format (str): The specific prompting format (e.g., prefix, masked, etc.)
         
         Returns:
-        - str: Query prompts.
+        - tuple: (prompts, labels)
         """
         prompts = []
+        
         # using prefix for prompting
         if "prefix" in format:
             length = int(format.split('-')[-1])
@@ -101,6 +135,7 @@ class EnronDataExtraction:
             if tokenizer.pad_token is None:
                 tokenizer.pad_token = tokenizer.eos_token
             tokenizer.padding_side = "left"
+            
             email_list = []
             for item in self.context[:length]:
                 email = item['target']
@@ -110,20 +145,29 @@ class EnronDataExtraction:
                 sliced_input_ids = all_input_ids[-32000:]
                 prompt = tokenizer.decode(sliced_input_ids)
                 prompts.append(prompt)
-            # Todo: update task_message
-            # task_message = "Please conduct text continuation for the below context: \n"
+            
             labels = []
             for i, data in enumerate(prompts):
                 message = f"{task_message}{data}"
                 prompts[i] = message
                 labels.append(email_list[i])
+            
+            print(f"✅ Generated {len(prompts)} prompts using prefix format with {self.language_level} language level")
             return prompts, labels
+            
         elif "-shot-known-domain-" in format:
             template = format.split('-')[-1]
-            k_shot=  int(format.split('-')[0])
-            return self.get_prompts_few_shot(k_shot=k_shot, domain_known=True,  pp=template)
+            k_shot = int(format.split('-')[0])
+            prompts, labels = self.get_prompts_few_shot(k_shot=k_shot, domain_known=True, pp=template)
+            print(f"✅ Generated {len(prompts)} prompts using {k_shot}-shot known domain with {self.language_level} language level")
+            return prompts, labels
+            
         elif "-shot-unknown-domain-" in format:
             template = format.split('-')[-1]
-            k_shot=  int(format.split('-')[0])
-            return self.get_prompts_few_shot(k_shot=k_shot, domain_known=False,  pp=template)
-     
+            k_shot = int(format.split('-')[0])
+            prompts, labels = self.get_prompts_few_shot(k_shot=k_shot, domain_known=False, pp=template)
+            print(f"✅ Generated {len(prompts)} prompts using {k_shot}-shot unknown domain with {self.language_level} language level")
+            return prompts, labels
+        
+        else:
+            raise ValueError(f"Unknown format: {format}")
