@@ -72,10 +72,22 @@ print(f"Attack format: {atk_format}")
 
 prompts, labels = enron.generate_prompts(format=atk_format)
 
-# token_length = enron.calculate_token_length(prompts=prompts)
+# ====================================================================================================== #
+# Choose Defense option
 
-# print(f"Token Length: {token_length}")
-# print(f"Sum Token Length: {sum(token_length)}")
+while True:
+    use_scrubbing = input("\nDo you want to use PII Scrubbing protection? (y/n): ").strip().lower()
+    if use_scrubbing in ['y', 'n']:
+        break
+    else:
+        print("Please input 'y' or 'n' only")
+
+USE_SCRUBBING = (use_scrubbing == 'y')
+
+if USE_SCRUBBING:
+    print("✅ PII Scrubbing enabled - Personal data will be masked")
+else:
+    print("⚠️ PII Scrubbing disabled - Original responses will be shown")
 
 # ====================================================================================================== #
 # Prepare model
@@ -110,6 +122,7 @@ print(f"Initializing output file: {OUTPUT_PATH}")
 with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:
     f.write("="*100 + "\n")
     f.write(f"ATTACK LOG START - Total Target Samples: {NUM_SAMPLES}\n")
+    f.write(f"PII Scrubbing: {'ENABLED' if USE_SCRUBBING else 'DISABLED'}\n")
     f.write("="*100 + "\n")
     f.write(f"\nMODEL : {model_map[model]}\n")
 
@@ -123,7 +136,21 @@ for i in range(0, NUM_SAMPLES, BATCH_SIZE):
     
     print(f"\nProcessing Batch {i+1} to {end_idx} ({len(batch_prompts)} samples)...")
     
-    batch_results = attack.execute_attack(batch_prompts, llm, delay_between_calls=15)
+    # เลือกใช้ method ตามการตั้งค่า
+    if USE_SCRUBBING:
+        batch_results_raw = attack.execute_attack_with_scrubbing(
+            batch_prompts, 
+            llm, 
+            delay_between_calls=15
+        )
+        # แปลงเป็น list ของ scrubbed responses เพื่อคำนวณ metric
+        batch_results = [r['scrubbed'] for r in batch_results_raw]
+    else:
+        batch_results = attack.execute_attack(
+            batch_prompts, 
+            llm, 
+            delay_between_calls=15
+        )
     
     # คำนวณ Metric ของ Batch นี้
     metric = ExtractionRate(outputs=batch_results, labels=batch_labels)
@@ -135,6 +162,10 @@ for i in range(0, NUM_SAMPLES, BATCH_SIZE):
         with redirect_stdout(f):
             print(f"\n{'#'*40} BATCH REPORT ({i+1}-{end_idx}) {'#'*40}")
             print(f"Batch Metrics (ASR): {batch_asr:.2f}%")
+            
+            if USE_SCRUBBING:
+                pii_count = sum(1 for r in batch_results_raw if r['pii_found'])
+                print(f"PII Detected in Batch: {pii_count}/{len(batch_results_raw)}")
             
             for idx in range(len(batch_results)):
                 # คำนวณ Index จริง (Global Index)
@@ -150,8 +181,13 @@ for i in range(0, NUM_SAMPLES, BATCH_SIZE):
                 status_icon = "✅ LEAKED" if is_success else "❌ SAFE"
                 
                 print(f"\n{'─'*100}")
-                print(f"SAMPLE #{global_idx + 1}") # ใช้ global_idx เพื่อให้เลขรันต่อกัน
+                print(f"SAMPLE #{global_idx + 1}")
                 print(f"STATUS: {status_icon}")
+                
+                if USE_SCRUBBING and batch_results_raw[idx]['pii_found']:
+                    pii_types_str = ", ".join(batch_results_raw[idx]['pii_types'])
+                    print(f"🛡️ PII DETECTED: {pii_types_str}")
+                
                 print(f"{'─'*100}")
 
                 print(f"\n📝 PROMPT (Input):")
@@ -160,11 +196,19 @@ for i in range(0, NUM_SAMPLES, BATCH_SIZE):
                 print(f"\n🔐 LABEL (Secret):") 
                 print(batch_labels[idx])
 
-                print(f"\n💬 ANSWER (Model Output):")
-                print(batch_results[idx])
+                if USE_SCRUBBING:
+                    print(f"\n💬 ANSWER (Model Output):")
+                    print(batch_results_raw[idx]['original'])
+                    
+                    if batch_results_raw[idx]['pii_found']:
+                        print(f"\n🛡️ SCRUBBED ANSWER (Protected):")
+                        print(batch_results_raw[idx]['scrubbed'])
+                else:
+                    print(f"\n💬 ANSWER (Model Output):")
+                    print(batch_results[idx])
+                
                 print()
     
     # อัปเดตจำนวนที่ทำไปแล้ว
     processed_count += len(batch_results)
     print(f"Batch finished. Saved to file.")
-
