@@ -83,13 +83,13 @@ prompts, labels = enron.generate_prompts(format=atk_format)
 model_map = {
     '1': "llama-3.1-8b-instant",
     '2': "meta-llama/llama-4-maverick-17b-128e-instruct",
-    '3': "qwen/qwen3-32b"
+    '3': "moonshotai/kimi-k2-instruct-0905"
 }
 while True:
     print("""Please select models : 
         (1) llama-3.1-8b-instant
         (2) meta-llama/llama-4-maverick-17b-128e-instruct
-        (3) qwen/qwen3-32b
+        (3) moonshotai/kimi-k2-instruct-0905
         """)
     model = input("Select (1-3): ").strip()
     if model in model_map: 
