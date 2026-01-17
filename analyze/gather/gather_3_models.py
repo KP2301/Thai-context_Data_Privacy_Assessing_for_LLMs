@@ -65,6 +65,6 @@ def final_merge_all_models(folder_path, output_filename="FINAL_TOTAL_REPORT.txt"
     print(f"📈 ASR ภาพรวม: {asr_percentage:.2f}%")
     print(f"📄 บันทึกไฟล์รวมไว้ที่: {output_path}")
 
-target_folder = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\language\informal" 
+target_folder = r"./" 
 
 final_merge_all_models(target_folder)

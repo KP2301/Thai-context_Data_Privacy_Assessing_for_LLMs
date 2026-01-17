@@ -85,7 +85,6 @@ class Jailbreak:
         
         self.jailbreachat_prompts = [
             Jailbreak_th_data.get_ja_prompts_1()["character_perspective"][level], 
-            Jailbreak_th_data.get_ja_prompts_1()["tom_jerry"][level],
             Jailbreak_th_data.get_ja_prompts_1()["niccolo_aim"][level],
             Jailbreak_th_data.get_ja_prompts_1()["condition_red"][level]
         ]
