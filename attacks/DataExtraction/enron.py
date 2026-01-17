@@ -44,7 +44,7 @@ class EnronDataExtraction:
         return token_lengths
 
 
-    def generate_prompts(self, format, task_message="Please conduct text continuation for the below context: \n"):
+    def generate_prompts(self, format, task_message="กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"):
         """
         Generate a prompt for the Enron dataset based on a specific query.
         
