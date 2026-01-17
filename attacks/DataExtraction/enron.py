@@ -15,7 +15,7 @@ class EnronDataExtraction:
         
         self.data_path = data_path
 
-        self.context = load_jsonl(os.path.join(data_path, "ceremonial_1_400.jsonl"))
+        self.context = load_jsonl(os.path.join(data_path, "context.jsonl"))
         self.email2name_json = load_jsonl(os.path.join(data_path, "email2name.jsonl"))
         self.email2name = {}
         for item in self.email2name_json:
@@ -104,7 +104,7 @@ class EnronDataExtraction:
         return token_lengths
 
 
-    def generate_prompts(self, format, task_message="กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"):
+    def generate_prompts(self, format, task_message="Please conduct text continuation for the below context: \n"):
         """
         Generate a prompt for the Enron dataset based on a specific query.
         
@@ -126,13 +126,14 @@ class EnronDataExtraction:
             email_list = []
             for item in self.context[:length]:
                 email = item['target']
-                context = item['text']
+                context = item['prompt']
                 email_list.append(email)
                 all_input_ids = tokenizer.encode(context, add_special_tokens=False)
                 sliced_input_ids = all_input_ids[-32000:]
                 prompt = tokenizer.decode(sliced_input_ids)
                 prompts.append(prompt)
             # Todo: update task_message
+            # task_message="กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"
             # task_message = "Please conduct text continuation for the below context: \n"
             labels = []
             for i, data in enumerate(prompts):
