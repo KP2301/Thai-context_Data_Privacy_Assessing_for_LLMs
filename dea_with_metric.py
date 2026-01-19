@@ -45,7 +45,9 @@ if "GROQ_API_KEY" not in os.environ:
 # ====================================================================================================== #
 # Prepare data and prompts
 
-enron = EnronDataExtraction(data_path="data/enron")
+file_name = "semi_formal_1_610.jsonl" # edit file to run here (file must be at data/enron)
+enron = EnronDataExtraction(data_path="data/enron", file_name=file_name)
+print(f"Now running : {file_name}")
 NUM_SAMPLES = int(input("Please input number of samples (max 3000): "))
 atk_format = f'prefix-{NUM_SAMPLES}'
 print(f"Attack format: {atk_format}")

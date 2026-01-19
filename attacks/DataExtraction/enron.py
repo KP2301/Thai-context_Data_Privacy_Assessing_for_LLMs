@@ -5,7 +5,7 @@ def get_local_domain(email):
     return email.split('@')
 
 class EnronDataExtraction:
-    def __init__(self, data_path="path_to_enron_data"):
+    def __init__(self, file_name ,data_path="path_to_enron_data"):
         """
         Initialize the Enron dataset.
         
@@ -15,7 +15,7 @@ class EnronDataExtraction:
         
         self.data_path = data_path
 
-        self.context = load_jsonl(os.path.join(data_path, "ceremonial_1_610.jsonl"))
+        self.context = load_jsonl(os.path.join(data_path, file_name))
         self.email2name_json = load_jsonl(os.path.join(data_path, "email2name.jsonl"))
         self.email2name = {}
         for item in self.email2name_json:
