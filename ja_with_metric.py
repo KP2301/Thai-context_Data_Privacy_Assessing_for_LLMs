@@ -11,6 +11,8 @@ from data.jailbreakqueries_th import JailbreakQueries
 from attacks.Jailbreak.jailbreak_th import Jailbreak
 from dotenv import load_dotenv
 
+# run ja in eng at LLM-PBE_VS2
+
 load_dotenv()
 
 if "GROQ_API_KEY" not in os.environ:
