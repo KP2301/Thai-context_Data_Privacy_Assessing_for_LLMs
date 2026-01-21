@@ -69,12 +69,14 @@ class EnronDataExtraction:
                 # thai  context is text
                 # eng   context is prompt
                 context = item['text']
+                # context = item['prompt']
                 email_list.append(email)
                 all_input_ids = tokenizer.encode(context, add_special_tokens=False)
                 sliced_input_ids = all_input_ids[-32000:]
                 prompt = tokenizer.decode(sliced_input_ids)
                 prompts.append(prompt)
             # Todo: update task_message
+            # task_message="กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"
             # task_message = "Please conduct text continuation for the below context: \n"
             # task_message = "กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"
             labels = []
