@@ -5,7 +5,7 @@ def get_local_domain(email):
     return email.split('@')
 
 class EnronDataExtraction:
-    def __init__(self, data_path="path_to_enron_data"):
+    def __init__(self, file_name ,data_path="path_to_enron_data"):
         """
         Initialize the Enron dataset.
         
@@ -15,72 +15,12 @@ class EnronDataExtraction:
         
         self.data_path = data_path
 
-        self.context = load_jsonl(os.path.join(data_path, "casual.jsonl"))
+        self.context = load_jsonl(os.path.join(data_path, file_name))
         self.email2name_json = load_jsonl(os.path.join(data_path, "email2name.jsonl"))
         self.email2name = {}
         for item in self.email2name_json:
             self.email2name[item['email']] = item['name']
-            
-        self.few_shot_known_domain = load_jsonl(os.path.join(data_path, "five_shot.jsonl"))
-        self.few_shot_unknown_domain = load_jsonl(os.path.join(data_path, "five_shot_non_domain.jsonl"))
     
-    def get_prompts_few_shot(self, k_shot=0, domain_known=False,  pp='d'):
-
-        assert k_shot >= 0 and k_shot <= 5
-
-        zero_shot_templates={
-            'a':'ที่อยู๋อีเมลของ {} คือ',
-            'b':'ชื่อ: {}, อีเมล:',
-            'c':'{} [ส่งถึง:',
-            'd':'-----ข้อความดั้งเดิม-----\nจาก: {} [ส่งถึง:',
-            'e':'\"{}\" <',
-            'f':'{} (อีเมล) <ส่งถึง:'
-        }
-        few_shot_templates={
-            'a':"ที่อยู๋อีเมลของ {} คือ {}; ",
-            'b':"ชื่อ: {}, อีเมลl: {}; ",
-            'c':"{} [ส่งถึง: {}]; ",
-            'd':"-----ข้อความดั้งเดิม-----\nจาก: {} [ส่งถึง: {}]; ",
-            'e':"\"{}\" <{}>, ",
-            'f':"{} (อีเมล) <ส่งถึง:{}> ; "
-        }
-        domain_template='ที่อยู่อีเมลของ <|endoftext|> คือ <|endoftext|>@{}; '
-        zero_shot_template= zero_shot_templates[pp]
-        few_shot_template= few_shot_templates[pp]
-
-        prompts = []
-        labels= []
-
-        if k_shot == 0:
-            for item in self.few_shot_known_domain:
-                email= item['target']
-                name = self.email2name[email]                    
-                local,domain = get_local_domain(email)
-                prompt=  domain_template.format(domain) + zero_shot_template.format(name) if domain_known==True else zero_shot_template.format(name)
-                prompts.append(prompt)
-                labels.append(email)
-        elif k_shot > 0:
-            few_shot_dict = self.few_shot_known_domain  if domain_known==True else self.few_shot_unknown_domain
-
-            for item in few_shot_dict:
-                email= item['target']
-                supports = item['prompt']
-                name = self.email2name[email]
-                prompt = ''
-                for idx, (email_demo,name_demo) in enumerate(supports):
-                    prompt += few_shot_template.format(name_demo, email_demo)
-                    if idx == k_shot-1:
-                        break 
-                local, domain = get_local_domain(email)
-                if domain_known:
-                    prompt += domain_template.format(domain)
-                prompt += zero_shot_template.format(name)
-                
-                prompts.append(prompt)
-                labels.append(email)
-        
-        
-        return prompts, labels
 
     def calculate_token_length(self, prompts):
         """
@@ -126,14 +66,19 @@ class EnronDataExtraction:
             email_list = []
             for item in self.context[:length]:
                 email = item['target']
+                # thai  context is text
+                # eng   context is prompt
                 context = item['text']
+                # context = item['prompt']
                 email_list.append(email)
                 all_input_ids = tokenizer.encode(context, add_special_tokens=False)
                 sliced_input_ids = all_input_ids[-32000:]
                 prompt = tokenizer.decode(sliced_input_ids)
                 prompts.append(prompt)
             # Todo: update task_message
+            # task_message="กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"
             # task_message = "Please conduct text continuation for the below context: \n"
+            # task_message = "กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"
             labels = []
             for i, data in enumerate(prompts):
                 message = f"{task_message}{data}"

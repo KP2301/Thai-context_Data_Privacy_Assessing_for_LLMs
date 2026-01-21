@@ -6,7 +6,7 @@ class PromptExtraction:
     def __init__(self):
         pass
                     
-    def execute_attack(self, data, model, retry_count=3, delay_between_calls=2):
+    def execute_attack(self, data, model, retry_count=3, delay_between_calls=2, defence_mode=False):
         results = []
         
         # # ใช้ tqdm เพื่อดู progress
@@ -18,7 +18,6 @@ class PromptExtraction:
             while not success and attempts < retry_count:
                 try:
                     response = model.query(prompt)
-                    
                     # ตรวจสอบว่า Response ต้องไม่ว่างเปล่า
                     if response is not None:
                         results.append(str(response).strip())

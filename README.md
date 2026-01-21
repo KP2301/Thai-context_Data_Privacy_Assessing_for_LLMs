@@ -14,6 +14,8 @@ pip install together
 
 pip install pythainlp
 
+pip install python-crfsuite
+
 Analyze method: 
 1. run gather_file.py for each language level folder
 2. run gather_3_model.py 
