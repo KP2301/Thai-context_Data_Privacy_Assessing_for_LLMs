@@ -45,37 +45,13 @@ if "GROQ_API_KEY" not in os.environ:
 # ====================================================================================================== #
 # Prepare data and prompts
 
-enron = EnronDataExtraction(data_path="data/enron")
-
-while True:
-    first_format = input("""Please input attack format from this list : 
-         (1) 'prefix'
-         (2) 'shot-domain'
-        Select (1 or 2): """)
-    if first_format in ['1', '2']:
-        break
-    else: 
-        print("Please input right format (1 or 2 only)")
-
+file_name = "semi_formal_1_610.jsonl" # edit file to run here (file must be at data/enron)
+enron = EnronDataExtraction(data_path="data/enron", file_name=file_name)
+print(f"Now running : {file_name}")
 NUM_SAMPLES = int(input("Please input number of samples (max 3000): "))
-
-if first_format == '1':
-    atk_format = f'prefix-{NUM_SAMPLES}'
-
-elif first_format == '2':
-    shot = int(input("Please input the number of shot between 0-5: "))
-    k_domain = input("Please input \"known\" or \"unknown\": ")
-    domain = input("Please input domain a-f: ")
-    atk_format = f"{shot}-shot-{k_domain}-domain-{domain}"
-
+atk_format = f'prefix-{NUM_SAMPLES}'
 print(f"Attack format: {atk_format}")
-
 prompts, labels = enron.generate_prompts(format=atk_format)
-
-# token_length = enron.calculate_token_length(prompts=prompts)
-
-# print(f"Token Length: {token_length}")
-# print(f"Sum Token Length: {sum(token_length)}")
 
 # ====================================================================================================== #
 # Prepare model
@@ -83,13 +59,13 @@ prompts, labels = enron.generate_prompts(format=atk_format)
 model_map = {
     '1': "llama-3.1-8b-instant",
     '2': "meta-llama/llama-4-maverick-17b-128e-instruct",
-    '3': "qwen/qwen3-32b"
+    '3': "moonshotai/kimi-k2-instruct-0905"
 }
 while True:
     print("""Please select models : 
         (1) llama-3.1-8b-instant
         (2) meta-llama/llama-4-maverick-17b-128e-instruct
-        (3) qwen/qwen3-32b
+        (3) moonshotai/kimi-k2-instruct-0905
         """)
     model = input("Select (1-3): ").strip()
     if model in model_map: 
