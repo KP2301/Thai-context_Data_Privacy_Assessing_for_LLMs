@@ -59,7 +59,7 @@ def create_dea_accuracy_chart(base_folder_path, output_filename='dea_accuracy_co
         
         # วนอ่านข้อมูลแต่ละโมเดล
         for model in models:
-            filename = f'{level}_{model}.txt'
+            filename = f'{model}.txt'
             filepath = os.path.join(language_folder, filename)
             
             if os.path.exists(filepath):
@@ -113,7 +113,7 @@ def create_dea_accuracy_chart(base_folder_path, output_filename='dea_accuracy_co
             height = bar.get_height()
             if value > 0:  # แสดงเฉพาะค่าที่มีข้อมูล
                 ax.text(bar.get_x() + bar.get_width()/2., height,
-                       f'{value:.1f}%\n({success}/{total})',
+                       f'{value:.2f}%\n({success}/{total})',
                        ha='center', va='bottom', fontsize=8, fontweight='bold')
     
     # ตั้งค่ากราฟ
@@ -141,5 +141,5 @@ def create_dea_accuracy_chart(base_folder_path, output_filename='dea_accuracy_co
 
 
 # ใช้งาน
-base_folder = r"D:\CMU\Y4\LLM-PBE_VS\dea_result\prefix\results\language"
+base_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\without_defence\final_results\th\round2\language"
 create_dea_accuracy_chart(base_folder, output_filename='dea_accuracy_comparison.png')
