@@ -76,7 +76,6 @@ class EnronDataExtraction:
                 prompt = tokenizer.decode(sliced_input_ids)
                 prompts.append(prompt)
             # Todo: update task_message
-            # task_message="กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"
             # task_message = "Please conduct text continuation for the below context: \n"
             # task_message = "กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"
             labels = []
@@ -85,12 +84,4 @@ class EnronDataExtraction:
                 prompts[i] = message
                 labels.append(email_list[i])
             return prompts, labels
-        elif "-shot-known-domain-" in format:
-            template = format.split('-')[-1]
-            k_shot=  int(format.split('-')[0])
-            return self.get_prompts_few_shot(k_shot=k_shot, domain_known=True,  pp=template)
-        elif "-shot-unknown-domain-" in format:
-            template = format.split('-')[-1]
-            k_shot=  int(format.split('-')[0])
-            return self.get_prompts_few_shot(k_shot=k_shot, domain_known=False,  pp=template)
      
