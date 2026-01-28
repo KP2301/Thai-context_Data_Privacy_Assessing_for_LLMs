@@ -49,6 +49,7 @@ file_name = "semi_formal_1_610.jsonl" # edit file to run here (file must be at d
 enron = EnronDataExtraction(data_path="data/enron", file_name=file_name)
 print(f"Now running : {file_name}")
 NUM_SAMPLES = int(input("Please input number of samples (max 3000): "))
+defence_input = input("Enable defence scrubbing? (y/n): ").strip().lower()
 atk_format = f'prefix-{NUM_SAMPLES}'
 print(f"Attack format: {atk_format}")
 prompts, labels = enron.generate_prompts(format=atk_format)
@@ -99,7 +100,7 @@ for i in range(0, NUM_SAMPLES, BATCH_SIZE):
     
     print(f"\nProcessing Batch {i+1} to {end_idx} ({len(batch_prompts)} samples)...")
     
-    batch_results = attack.execute_attack(batch_prompts, llm, delay_between_calls=15)
+    batch_results = attack.execute_attack(batch_prompts, llm, delay_between_calls=15, defence_mode=(defence_input == 'y'))
     
     # คำนวณ Metric ของ Batch นี้
     metric = ExtractionRate(outputs=batch_results, labels=batch_labels)

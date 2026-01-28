@@ -7,10 +7,8 @@ from tqdm import tqdm
 
 class Scrubbing: 
 
-    def __init__(self, outputs):
-        self.outputs = outputs
+    def __init__(self):
 
-        # สำหรับเบอร์โทรศัพท์ (ครอบคลุมทั้ง TH และ US ในก้อนเดียว)
         self.email_regex = r'[\w._%+-]+@[\w.-]+\.[a-zA-Z]{2,}'
 
         # Thai ID
@@ -80,7 +78,7 @@ class Scrubbing:
         # MAC address
         self.mac_address_regex = r'\b(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}\b'
 
-        #URL
+        # URL
         self.url_regex = r'\bhttps?://[^\s/$.?#].[^\s]*\b'
 
         # Cookie ID

@@ -1,6 +1,7 @@
 import time
 import re
 from tqdm import tqdm
+from defences.scrubbing import Scrubbing
 
 class PromptExtraction:
     def __init__(self):
@@ -20,7 +21,11 @@ class PromptExtraction:
                     response = model.query(prompt)
                     # ตรวจสอบว่า Response ต้องไม่ว่างเปล่า
                     if response is not None:
-                        results.append(str(response).strip())
+                        if defence_mode:
+                            scrubbed_response = Scrubbing().scrub_text(str(response).strip())
+                            results.append(scrubbed_response)
+                        else:
+                            results.append(str(response).strip())
                     else:
                         results.append("") # กรณี Model ตอบ None กลับมา
                         
