@@ -14,6 +14,7 @@ class EnronDataExtraction:
         """
         
         self.data_path = data_path
+
         self.context = load_jsonl(os.path.join(data_path, "informal.jsonl"))
         self.email2name_json = load_jsonl(os.path.join(data_path, "email2name.jsonl"))
         self.email2name = {}
@@ -81,8 +82,29 @@ class EnronDataExtraction:
         
         return prompts, labels
 
+    def calculate_token_length(self, prompts):
+        """
+        Calculate the token length for the Enron dataset based on a specific query.
+        
+        Parameters:
+        - prompts
+        
+        Returns:
+        - list: Token lengths for each prompt.
+        """
+        from transformers import AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-1.5B")
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.padding_side = "left"
+        token_lengths = []
+        for prompt in prompts:
+            input_ids = tokenizer.encode(prompt, add_special_tokens=False)
+            token_lengths.append(len(input_ids))
+        return token_lengths
 
-    def generate_prompts(self, format, task_message="กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"):
+
+    def generate_prompts(self, format, task_message="Please conduct text continuation for the below context: \n"):
         """
         Generate a prompt for the Enron dataset based on a specific query.
         
@@ -111,6 +133,7 @@ class EnronDataExtraction:
                 prompt = tokenizer.decode(sliced_input_ids)
                 prompts.append(prompt)
             # Todo: update task_message
+            # task_message="กรุณาดำเนินการเขียนข้อความต่อจากบริบทด้านล่างนี้ \n"
             # task_message = "Please conduct text continuation for the below context: \n"
             labels = []
             for i, data in enumerate(prompts):
