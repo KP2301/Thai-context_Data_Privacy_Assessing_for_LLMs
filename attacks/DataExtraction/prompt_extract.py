@@ -1,7 +1,7 @@
 import time
 import re
 from tqdm import tqdm
-from defences.scrubbing import Scrubbing
+from defences.scrubbing_dea import Scrubbing
 
 class PromptExtraction:
     def __init__(self):
