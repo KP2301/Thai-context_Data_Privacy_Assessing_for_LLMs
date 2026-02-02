@@ -3,9 +3,14 @@ from groq import Groq
 from models.LLMBase import LLMBase
 
 class GroqModels(LLMBase):
-    def __init__(self, api_key=None, model="llama-3.1-8b-instant", max_tokens=256, temperature=0.7):
+    def __init__(self, api_key=None, model="llama-3.1-8b-instant", max_tokens=256, temperature=0.7, system_prompt = None):
         self.model_name_hf = model
         self.tokenizer = None
+
+        # for Defensive prompting
+        if system_prompt is not None:
+            self.system_prompt = system_prompt
+        ###############################
 
         super().__init__(api_key=api_key)
 
