@@ -33,10 +33,21 @@ class GroqModels(LLMBase):
 
     def query_remote_model(self, prompt_or_messages):
         try:
+            messages = []
+
+            if hasattr(self, "system_prompt") and self.system_prompt:
+                messages.append({
+                    "role": "system",
+                    "content": self.system_prompt
+                })
+
             if isinstance(prompt_or_messages, list):
-                messages = prompt_or_messages
+                messages.extend(prompt_or_messages)
             else:
-                messages = [{"role": "user", "content": str(prompt_or_messages)}]
+                messages.append({
+                "role": "user",
+                "content": str(prompt_or_messages)
+            })
 
             response = self.client.chat.completions.create(
                 model=self.model,
