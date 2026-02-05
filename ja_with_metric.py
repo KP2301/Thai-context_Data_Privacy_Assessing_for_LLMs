@@ -82,11 +82,13 @@ def get_user_selection():
     print("\n[STEP 3] Advanced Settings:")
     w_choice = input(">> จำนวน Workers (Default 1): ").strip()
     workers = int(w_choice) if w_choice.isdigit() and int(w_choice) > 0 else 1
-    return model_name, target_levels, workers
+
+    print("\n[STEP 4] Defence Mode:")
+    defence_mode = input(">> เปิดโหมดป้องกัน (y/n, Default n): ").strip().lower()
+    return model_name, target_levels, workers, defence_mode
 
 if __name__ == "__main__":
-    selected_model, selected_levels, num_workers = get_user_selection()
-
+    selected_model, selected_levels, num_workers, defence_mode = get_user_selection()
     OUTPUT_DIR = "output/ja"
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     safe_model_name = selected_model.replace("/", "_")
@@ -120,7 +122,7 @@ if __name__ == "__main__":
         current_prompts = []
         for query in queries:
             for jailbreak_prompt in attack.prompts:
-                full_prompt = attack.get_combined_prompts(query, jailbreak_prompt, llm.model)
+                full_prompt = attack.get_combined_prompts(query, jailbreak_prompt, llm.model,  defence_mode == 'y')
                 if full_prompt:
                     current_prompts.append(full_prompt)
         
