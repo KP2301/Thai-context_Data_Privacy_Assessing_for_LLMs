@@ -87,6 +87,8 @@ def get_user_selection():
 
     print("\n[STEP 4] Defence Mode:")
     defence_mode = input(">> เปิดโหมดป้องกัน (y/n, Default n): ").strip().lower()
+    if defence_mode not in ['y', 'n']:
+        defence_mode = 'n'
     return model_name, target_levels, workers, defence_mode
 
 if __name__ == "__main__":
