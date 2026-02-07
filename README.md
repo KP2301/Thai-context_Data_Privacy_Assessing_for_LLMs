@@ -18,10 +18,9 @@ pip install python-crfsuite
 
 Analyze method: 
 1. run gather_file.py for each language level folder
-2. run gather_3_model.py 
 
 DEA Language: 
-1. run plot_graph_by_language.py
+1. run plot_graph_by_language_seperate_th.py
 
 DEA Length: 
 1. run add_length_count.py

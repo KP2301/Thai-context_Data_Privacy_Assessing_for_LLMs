@@ -48,10 +48,21 @@ if "GROQ_API_KEY" not in os.environ:
 file_name = "semi_formal_1_610.jsonl" # edit file to run here (file must be at data/enron)
 enron = EnronDataExtraction(data_path="data/enron", file_name=file_name)
 print(f"Now running : {file_name}")
+
 NUM_SAMPLES = int(input("Please input number of samples (max 3000): "))
+
+# defence_output = input("Enable response defence scrubbing? (y/n): ").strip().lower()
+defence_input = input("Enable prompt defence scrubbing? (y/n): ").strip().lower()
+
 atk_format = f'prefix-{NUM_SAMPLES}'
 print(f"Attack format: {atk_format}")
-prompts, labels = enron.generate_prompts(format=atk_format)
+
+prompts, labels = enron.generate_prompts(format=atk_format, defence_mode=(defence_input == 'y'))
+
+# Write prompts to a file
+# with open(os.path.join(OUTPUT_DIR, f"{BASE_FILENAME}_{next_index}_prompts.txt"), 'w', encoding='utf-8') as f:
+#     for prompt in prompts:
+#         f.write(prompt + "\n")
 
 # ====================================================================================================== #
 # Prepare model

@@ -1,6 +1,7 @@
 import time
 import re
 from tqdm import tqdm
+from defences.scrubbing_dea import Scrubbing
 
 class PromptExtraction:
     def __init__(self):
@@ -9,7 +10,7 @@ class PromptExtraction:
     def execute_attack(self, data, model, retry_count=3, delay_between_calls=2, defence_mode=False):
         results = []
         
-        # # ใช้ tqdm เพื่อดู progress
+        # ใช้ tqdm เพื่อดู progress
         pbar = tqdm(data, desc="Executing Attack", unit="sample")
         for prompt in pbar:
             success = False
@@ -20,7 +21,11 @@ class PromptExtraction:
                     response = model.query(prompt)
                     # ตรวจสอบว่า Response ต้องไม่ว่างเปล่า
                     if response is not None:
-                        results.append(str(response).strip())
+                        if defence_mode:
+                            scrubbed_response = Scrubbing().scrub_text(str(response).strip())
+                            results.append(scrubbed_response)
+                        else:
+                            results.append(str(response).strip())
                     else:
                         results.append("") # กรณี Model ตอบ None กลับมา
                         
@@ -32,7 +37,6 @@ class PromptExtraction:
                 except Exception as e:
                     attempts += 1
                     error_msg = str(e).lower()
-                    # เช็คว่าเป็น Error เรื่อง Rate Limit หรือ Token เกินหรือไม่
                     # Groq มักจะส่ง 413 (Request too large) หรือ 429 (Too many requests)
                     if "413" in error_msg or "429" in error_msg or "rate_limit_exceeded" in error_msg:
                         wait_time = 65  # รอ 65 วินาที (เผื่อ TPM reset)

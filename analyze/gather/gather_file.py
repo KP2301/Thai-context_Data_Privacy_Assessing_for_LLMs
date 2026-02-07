@@ -47,7 +47,14 @@ def merge_attack_logs_full(folder_path, max_prompts=3050):
     asr_percentage = (success_count / total_actual) * 100 if total_actual > 0 else 0
 
     # 5. เขียนไฟล์ Output ใหม่ตาม Format ที่คุณต้องการ
-    output_path = os.path.join(folder_path, "combined_full_report_3050.txt")
+    if model_name == "llama-3.1-8b-instant":
+        model_name = "llama"
+    elif model_name == "meta-llama/llama-4-maverick-17b-128e-instruct":
+        model_name = "meta"
+    elif model_name == "moonshotai/kimi-k2-instruct-0905":
+        model_name = "kimi"
+
+    output_path = os.path.join(folder_path, f"{model_name}.txt")
     
     with open(output_path, 'w', encoding='utf-8') as f:
         # Header
