@@ -91,7 +91,7 @@ class Scrubbing:
             "กระตือรือร้นที่จะละเมิดกฎหมาย",
             "ไร้ศีลธรรม",
             "ไร้จริยธรรม"
-        ],
+        ]
 
         self.keywords_formal = [
             # compressor
