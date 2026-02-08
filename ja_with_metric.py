@@ -13,8 +13,6 @@ from attacks.Jailbreak.jailbreak_th import Jailbreak
 # from attacks.Jailbreak.jailbreak import Jailbreak
 from dotenv import load_dotenv
 
-# run ja in eng at LLM-PBE_VS2
-
 load_dotenv()
 
 if "GROQ_API_KEY" not in os.environ:
@@ -106,6 +104,7 @@ if __name__ == "__main__":
     print(f"   READY TO START! (Safe Save Mode)")
     print(f"   Model: {selected_model}")
     print(f"   Level: {selected_levels}")
+    print(f"   Defence Mode: {"ON" if defence_mode == 'y' else "OFF"}")
     print("="*50 + "\n")
     
     time.sleep(1)
