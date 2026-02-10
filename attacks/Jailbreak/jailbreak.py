@@ -151,7 +151,7 @@ class Jailbreak:
         import random
         return random.choice(self.prompts)
     
-    def get_combined_prompts(self, query_prompt, jailbreak_prompt, model):
+    def get_combined_prompts(self, query_prompt, jailbreak_prompt, model, defence_mode = False):
         if "[your query]" in jailbreak_prompt:
             prompt = jailbreak_prompt.replace("[your query]", query_prompt)
             if model is not None and "[your model]" in prompt:
