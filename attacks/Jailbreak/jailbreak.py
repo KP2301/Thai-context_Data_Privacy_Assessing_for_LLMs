@@ -1,3 +1,5 @@
+from defences.scrubbing_ja_eng import Scrubbing
+
 class Jailbreak:
     def __init__(self, level="None"):
         self.obfuscation_prompts = [
@@ -151,11 +153,14 @@ class Jailbreak:
         import random
         return random.choice(self.prompts)
     
-    def get_combined_prompts(self, query_prompt, jailbreak_prompt, model, defence_mode = False):
+    def get_combined_prompts(self, query_prompt, jailbreak_prompt, model, defence_mode=False):
         if "[your query]" in jailbreak_prompt:
             prompt = jailbreak_prompt.replace("[your query]", query_prompt)
             if model is not None and "[your model]" in prompt:
                 prompt = prompt.replace("[your model]", model)
+            if defence_mode:
+                scrubber = Scrubbing()
+                prompt = scrubber.scrub_text(prompt)
             return prompt
         else:
             return -1
@@ -167,12 +172,9 @@ class Jailbreak:
         prompts = []
         print("Model: ", model)
         for prompt in data.generate_queries():
-            # print("prompt:", prompt)
             for jailbreak_prompt in jailbreak_prompts:
                 query_prompt = self.get_combined_prompts(prompt, jailbreak_prompt, model.model)
                 if query_prompt != -1:
-                    # print("Query Prompt: ", query_prompt)
-                    # print("Result: ", model.query(query_prompt))
                     prompts.append(query_prompt)
                     results.append(model.query(query_prompt))
         return results, prompts
