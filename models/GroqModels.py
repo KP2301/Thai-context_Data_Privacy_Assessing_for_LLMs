@@ -3,9 +3,14 @@ from groq import Groq
 from models.LLMBase import LLMBase
 
 class GroqModels(LLMBase):
-    def __init__(self, api_key=None, model="llama-3.1-8b-instant", max_tokens=256, temperature=0.7):
+    def __init__(self, api_key=None, model="llama-3.1-8b-instant", max_tokens=256, temperature=0.7, system_prompt = None):
         self.model_name_hf = model
         self.tokenizer = None
+
+        # for Defensive prompting
+        if system_prompt is not None:
+            self.system_prompt = system_prompt
+        ###############################
 
         super().__init__(api_key=api_key)
 
@@ -28,10 +33,21 @@ class GroqModels(LLMBase):
 
     def query_remote_model(self, prompt_or_messages):
         try:
+            messages = []
+
+            if hasattr(self, "system_prompt") and self.system_prompt:
+                messages.append({
+                    "role": "system",
+                    "content": self.system_prompt
+                })
+
             if isinstance(prompt_or_messages, list):
-                messages = prompt_or_messages
+                messages.extend(prompt_or_messages)
             else:
-                messages = [{"role": "user", "content": str(prompt_or_messages)}]
+                messages.append({
+                "role": "user",
+                "content": str(prompt_or_messages)
+            })
 
             response = self.client.chat.completions.create(
                 model=self.model,

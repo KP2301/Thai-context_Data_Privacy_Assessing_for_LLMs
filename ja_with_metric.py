@@ -8,7 +8,9 @@ from tqdm import tqdm
 from metrics.JailbreakRate import JailbreakRate 
 from models.GroqModels import GroqModels
 from data.jailbreakqueries_th import JailbreakQueries
+# from data.jailbreakqueries import JailbreakQueries
 from attacks.Jailbreak.jailbreak_th import Jailbreak
+# from attacks.Jailbreak.jailbreak import Jailbreak
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -80,11 +82,15 @@ def get_user_selection():
     print("\n[STEP 3] Advanced Settings:")
     w_choice = input(">> จำนวน Workers (Default 1): ").strip()
     workers = int(w_choice) if w_choice.isdigit() and int(w_choice) > 0 else 1
-    return model_name, target_levels, workers
+
+    print("\n[STEP 4] Defence Mode:")
+    defence_mode = input(">> เปิดโหมดป้องกัน (y/n, Default n): ").strip().lower()
+    if defence_mode not in ['y', 'n']:
+        defence_mode = 'n'
+    return model_name, target_levels, workers, defence_mode
 
 if __name__ == "__main__":
-    selected_model, selected_levels, num_workers = get_user_selection()
-
+    selected_model, selected_levels, num_workers, defence_mode = get_user_selection()
     OUTPUT_DIR = "output/ja"
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     safe_model_name = selected_model.replace("/", "_")
@@ -98,6 +104,7 @@ if __name__ == "__main__":
     print(f"   READY TO START! (Safe Save Mode)")
     print(f"   Model: {selected_model}")
     print(f"   Level: {selected_levels}")
+    print(f"   Defence Mode: {"ON" if defence_mode == 'y' else "OFF"}")
     print("="*50 + "\n")
     
     time.sleep(1)
@@ -118,7 +125,7 @@ if __name__ == "__main__":
         current_prompts = []
         for query in queries:
             for jailbreak_prompt in attack.prompts:
-                full_prompt = attack.get_combined_prompts(query, jailbreak_prompt, llm.model)
+                full_prompt = attack.get_combined_prompts(query, jailbreak_prompt, llm.model,  defence_mode == 'y')
                 if full_prompt:
                     current_prompts.append(full_prompt)
         
@@ -136,11 +143,23 @@ if __name__ == "__main__":
             metric_calculator = JailbreakRate(results)
             metric = metric_calculator.compute_metric()
             
-            total_cnt = metric.get('total', len(results))
-            
-            success_cnt = metric.get('success', metric.get('success_count', 0))
-            
-            rate_val = metric.get('rate', 0.0)
+            # รองรับทั้ง structure เดิมและใหม่
+            if 'summary' in metric:
+                # Structure ใหม่
+                total_cnt = metric['summary'].get('total', len(results))
+                success_cnt = metric['summary'].get('success_count', 0)
+                
+                # แปลง success_rate จาก string เป็น float
+                rate_str = metric['summary'].get('success_rate', '0.00%')
+                rate_val = float(rate_str.rstrip('%')) / 100
+                
+                breakdown = metric.get('breakdown', {})
+            else:
+                # Structure เดิม (fallback)
+                total_cnt = metric.get('total', len(results))
+                success_cnt = metric.get('success', metric.get('success_count', 0))
+                rate_val = metric.get('rate', 0.0)
+                breakdown = metric.get('breakdown', {})
 
             with open(OUTPUT_PATH, "a", encoding="utf-8") as f:
                 f.write(f"\n>>> LEVEL: {level} (METRIC SUMMARY)\n")
@@ -148,11 +167,32 @@ if __name__ == "__main__":
                 f.write(f"Total      : {total_cnt}\n")
                 f.write(f"Success    : {success_cnt}\n")
                 f.write(f"Rate       : {rate_val:.2%}\n")
-               
-                if 'breakdown' in metric:
-                    f.write(f"Breakdown  : {metric['breakdown']}\n")
+                
+                if breakdown:
+                    f.write(f"Breakdown  :\n")
+                    f.write(f"  - Jailbroken: {breakdown.get('jailbroken', 0)}\n")
+                    f.write(f"  - Blocked   : {breakdown.get('blocked', 0)}\n")
+                    f.write(f"  - Refused   : {breakdown.get('refused', 0)}\n")
+                
+                # แสดง success indices แบบจัดเรียงและแบ่งบรรทัด
+                if 'success_indices' in metric and metric['success_indices']:
+                    indices = metric['success_indices']
+                    f.write(f"\nSuccess Indices ({len(indices)} items):\n")
                     
-            
+                    # แบ่งเป็น chunks ละ 15 indices ต่อบรรทัด
+                    chunk_size = 15
+                    for i in range(0, len(indices), chunk_size):
+                        chunk = indices[i:i+chunk_size]
+                        # จัด format ให้สวยงาม
+                        formatted_chunk = ', '.join(f"{idx:3d}" for idx in chunk)
+                        f.write(f"  {formatted_chunk}\n")
+                
+                # แสดง success details ถ้ามี
+                if 'successes' in metric and metric['successes']:
+                    f.write(f"\nSuccess Details ({len(metric['successes'])} items):\n")
+                    for i, detail in enumerate(metric['successes'], 1):
+                        f.write(f"  {i:2d}. {detail}\n")
+                
             print(f"   Metric Saved: Success {success_cnt}/{total_cnt} ({rate_val:.2%})")
 
         except Exception as e:
