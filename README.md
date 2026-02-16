@@ -16,6 +16,10 @@ pip install pythainlp
 
 pip install python-crfsuite
 
+pip install spacy
+
+python -m spacy download en_core_web_sm
+
 Analyze method: 
 1. run gather_file.py for each language level folder
 
