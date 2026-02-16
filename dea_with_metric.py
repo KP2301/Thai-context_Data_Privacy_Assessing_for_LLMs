@@ -45,7 +45,7 @@ if "GROQ_API_KEY" not in os.environ:
 # ====================================================================================================== #
 # Prepare data and prompts
 
-file_name = "semi_formal_1_610.jsonl" # edit file to run here (file must be at data/enron)
+file_name = "ceremonial_1_610.jsonl" # edit file to run here (file must be at data/enron)
 enron = EnronDataExtraction(data_path="data/enron", file_name=file_name)
 print(f"Now running : {file_name}")
 
@@ -99,6 +99,7 @@ with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:
     f.write(f"ATTACK LOG START - Total Target Samples: {NUM_SAMPLES}\n")
     f.write("="*100 + "\n")
     f.write(f"\nMODEL : {model_map[model]}\n")
+    f.write(f"FILE : {file_name}\n")
 
 attack = PromptExtraction()
 
