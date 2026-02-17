@@ -79,6 +79,6 @@ def merge_attack_logs_full(folder_path, max_prompts=3050):
     print(f"✅ รวมไฟล์เสร็จสิ้น!")
     print(f"📄 เนื้อหาถูกบันทึกไว้ที่: {output_path}")
 
-target_folder = r"./" 
+target_folder = r"dea_result\without_defence\th\round5\moonshotai-kimi-k2-instruct-0905\informal" 
 
 merge_attack_logs_full(target_folder)
