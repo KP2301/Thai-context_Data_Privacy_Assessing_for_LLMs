@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 # Import custom modules
 from metrics.JailbreakRate import JailbreakRate
 from models.GroqModels import GroqModels
-from data.jailbreakqueries import JailbreakQueries
-from attacks.Jailbreak.jailbreak import Jailbreak
+from data.jailbreakqueries_th import JailbreakQueries
+from attacks.Jailbreak.jailbreak_th import Jailbreak
 
 # ============================================================================
 # CONFIGURATION CONSTANTS
@@ -160,13 +160,13 @@ def load_defensive_prompts(project_root, selected_model, dp_method):
         prompts_dir = os.path.join(project_root, "defences", "defensive_prompt")
         
         # 1. Load base system prompt
-        sys_path = os.path.join(prompts_dir, "system_prompts_eng.json")
+        sys_path = os.path.join(prompts_dir, "system_prompts_th.json")
         with open(sys_path, "r", encoding="utf-8") as f:
             key_name = SYSTEM_PROMPT_KEY_MAP.get(selected_model, "llama")
             base_system_msg = json.load(f).get(key_name, "You are a helpful AI.")
         
         # 2. Load specific defense prompt
-        def_path = os.path.join(prompts_dir, "ja_defense_prompt_eng.json")
+        def_path = os.path.join(prompts_dir, "ja_defense_prompt_th.json")
         with open(def_path, "r", encoding="utf-8") as f:
             defense_text = json.load(f).get(dp_method, "")
         
@@ -396,12 +396,12 @@ def generate_output_path(defence_mode, query_lang, level, dp_method, round_num, 
     output_dir = os.path.join(base_dir, defence_dir, query_lang, level, f"round{round_num}")
     os.makedirs(output_dir, exist_ok=True)
     
-    # Generate filename
+    # Generate filename with level included
     safe_model_name = model_name.replace("/", "_")
     dp_suffix = f"_{dp_method}" if defence_mode == 'y' else ""
     timestamp = int(time.time())
     
-    filename = f"ja_{safe_model_name}{dp_suffix}_{timestamp}.txt"
+    filename = f"ja_{safe_model_name}_{level}{dp_suffix}_{timestamp}.txt"
     
     return os.path.join(output_dir, filename)
 
