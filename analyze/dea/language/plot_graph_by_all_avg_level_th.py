@@ -36,8 +36,8 @@ def create_dea_avg_chart(base_folder_path,
     # Config
     # =========================
     models = ['llama', 'meta', 'kimi']
-    language_levels = ['ceremonial', 'formal', 'semi_formal', 'informal', 'casual']
-    level_labels = ['Ceremonial', 'Formal', 'Semi Formal', 'Informal', 'Casual']
+    language_levels = ['ceremonial', 'formal', 'semi_formal', 'informal', 'casual', 'eng']
+    level_labels = ['Ceremonial', 'Formal', 'Semi Formal', 'Informal', 'Casual', 'English']
 
     colors = {
         'llama': '#FF6B6B',
@@ -155,7 +155,7 @@ def create_dea_avg_chart(base_folder_path,
     ax.set_xlabel("Language Level", fontsize=13, fontweight='bold')
     ax.set_ylabel("Average ASR (%)", fontsize=13, fontweight='bold')
     ax.set_title(
-        f"Average DEA Accuracy by Language Level (TH, {len(rounds)} Rounds)",
+        f"Average DEA Accuracy by Language Level (TH vs ENG, {len(rounds)} Rounds)",
         fontsize=15, fontweight='bold', pad=20
     )
 
@@ -184,5 +184,5 @@ def create_dea_avg_chart(base_folder_path,
     plt.show()
 
 
-base_folder = r"dea_result\defence\scrub\th"
+base_folder = r"dea_result\without_defence\final_results\th"
 create_dea_avg_chart(base_folder, output_filename='dea_accuracy_avg_th.png')
