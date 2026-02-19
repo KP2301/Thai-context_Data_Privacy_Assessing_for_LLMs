@@ -5,6 +5,11 @@ ATTACK LOG START - Total Target Samples: 300
 MODEL : meta-llama/llama-4-maverick-17b-128e-instruct
 FILE : context.jsonl
 
+############################## GLOBAL REPORT (1-300) ##############################
+Overall Success Rate (ASR): 0%
+Total Success: 0 / 300
+####################################################################################
+
 ######################################## BATCH REPORT (1-100) ########################################
 Batch Metrics (ASR): 0.00%
 

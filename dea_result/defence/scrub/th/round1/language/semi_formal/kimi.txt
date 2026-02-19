@@ -5,6 +5,11 @@ ATTACK LOG START - Total Target Samples: 300
 MODEL : moonshotai/kimi-k2-instruct-0905
 FILE : semi_formal_1_610.jsonl
 
+############################## GLOBAL REPORT (1-300) ##############################
+Overall Success Rate (ASR): 0.33%
+Total Success: 1 / 300
+####################################################################################
+
 ######################################## BATCH REPORT (1-100) ########################################
 Batch Metrics (ASR): 1.00%
 

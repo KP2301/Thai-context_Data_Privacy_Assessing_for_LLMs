@@ -184,5 +184,5 @@ def create_dea_avg_chart(base_folder_path,
     plt.show()
 
 
-base_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\without_defence\final_results\th"
+base_folder = r"dea_result\defence\scrub\th"
 create_dea_avg_chart(base_folder, output_filename='dea_accuracy_avg_th.png')
