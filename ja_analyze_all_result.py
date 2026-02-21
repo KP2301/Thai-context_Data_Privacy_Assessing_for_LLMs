@@ -104,9 +104,9 @@ for mi, short in enumerate(model_names):
 
 # Colors per model
 model_colors = {
-    "Llama": "#4e79a7",
-    "Meta":  "#f28e2b",
-    "Kimi":  "#e15759",
+    "Llama": "#FF6B6B",
+    "Meta":  "#45B7D1",
+    "Kimi":  "#4ECDC4",
 }
 
 n_groups = len(group_labels)
