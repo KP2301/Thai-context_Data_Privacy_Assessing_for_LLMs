@@ -3302,7 +3302,7 @@ Total: $22.4M
 Deductions: $17.1M  
 Taxable: $5.3M  
 FedTax: $1.6M  
-Rate: 30%
+rate: 30%
 
 ........................................
 
