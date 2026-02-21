@@ -87,7 +87,7 @@ def create_single_round_graph(filepath, round_name, total_attempts=26):
     plt.tight_layout()
     
     # บันทึกกราฟ
-    output_file = f'eng_defence_kimi_{round_name}.png'
+    output_file = f'th_defence_defensive_prompt_meta_{round_name}.png'
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"  ✓ บันทึก: {output_file}\n")
     
@@ -181,7 +181,7 @@ def process_all_rounds(directory_path=r'E:\project-Backup\LLM-PBE_VS\ja_result\w
     # ประมวลผลแต่ละ round
     for round_folder in round_folders:
         round_name = round_folder.name
-        filepath = round_folder / 'ja_output_moonshotai_kimi-k2-instruct-0905.txt'
+        filepath = round_folder / 'ja_output_meta-llama_llama-4-maverick-17b-128e-instruct.txt'
         
         if not filepath.exists():
             print(f"✗ {round_name} - ไม่พบไฟล์ {filepath.name}")
@@ -270,10 +270,10 @@ def process_all_files_combined(directory_path, output_prefix='combined', per_rou
         
         # ค้นหาไฟล์ ja_output*.txt ทั้งหมดใน round นี้
         # ja_files = list(round_folder.glob('semi_formal\ja_output*.txt'))
-        ja_files = list(round_folder.glob('*\ja_output*.txt'))
+        # ja_files = list(round_folder.glob('semi_formal\ja_output*.txt'))
         # ja_files = list(round_folder.glob('semi_formal\ja_output_llama-3.1-8b-instant_semi_formal.txt'))
         # ja_files = list(round_folder.glob('semi_formal\ja_output_moonshotai_kimi-k2-instruct-0905_semi_formal.txt'))
-        # ja_files = list(round_folder.glob('semi_formal\ja_output_meta-llama_llama-4-maverick-17b-128e-instruct_semi_formal.txt'))
+        ja_files = list(round_folder.glob('semi_formal\ja_output_meta-llama_llama-4-maverick-17b-128e-instruct_semi_formal.txt'))
         
         if not ja_files:
             print(f"✗ {round_name} - ไม่พบไฟล์ ja_output*.txt")
@@ -397,12 +397,13 @@ if __name__ == "__main__":
     # แบบเก่า - แยกไฟล์ตาม model
     # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\without_defence\th"
     # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\scrub\eng"
-    # process_all_rounds(directory)
+    # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\defensive_prompt\eng"
     
     # แบบใหม่ - รวมทุกไฟล์ ja_output*.txt (แยกแต่ละรอบ + กราฟรวม)
-    directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\defensive_prompt\eng"
+    directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\defensive_prompt\th"
+    # process_all_rounds(directory)
+    # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\defensive_prompt\eng"
     
-    # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\scrub\th"
     # process_all_files_combined(
     #     directory_path=directory,
     #     output_prefix='th_defence_scrub_semi_formal_kimi',
@@ -411,7 +412,7 @@ if __name__ == "__main__":
     # )
     process_all_files_combined(
         directory_path=directory,
-        output_prefix='eng_defence_defensive_prompt',
+        output_prefix='th_defence_defensive_prompt_semi_formal_meta',
         per_round_attempts=78,
         total_attempts=390
     )
