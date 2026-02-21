@@ -269,7 +269,8 @@ def process_all_files_combined(directory_path, output_prefix='combined', per_rou
         round_name = round_folder.name
         
         # ค้นหาไฟล์ ja_output*.txt ทั้งหมดใน round นี้
-        ja_files = list(round_folder.glob('semi_formal\ja_output*.txt'))
+        # ja_files = list(round_folder.glob('semi_formal\ja_output*.txt'))
+        ja_files = list(round_folder.glob('*\ja_output*.txt'))
         # ja_files = list(round_folder.glob('semi_formal\ja_output_llama-3.1-8b-instant_semi_formal.txt'))
         # ja_files = list(round_folder.glob('semi_formal\ja_output_moonshotai_kimi-k2-instruct-0905_semi_formal.txt'))
         # ja_files = list(round_folder.glob('semi_formal\ja_output_meta-llama_llama-4-maverick-17b-128e-instruct_semi_formal.txt'))
@@ -399,8 +400,9 @@ if __name__ == "__main__":
     # process_all_rounds(directory)
     
     # แบบใหม่ - รวมทุกไฟล์ ja_output*.txt (แยกแต่ละรอบ + กราฟรวม)
-    # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\scrub\eng"
-    directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\scrub\th"
+    directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\defensive_prompt\eng"
+    
+    # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\scrub\th"
     # process_all_files_combined(
     #     directory_path=directory,
     #     output_prefix='th_defence_scrub_semi_formal_kimi',
@@ -409,7 +411,7 @@ if __name__ == "__main__":
     # )
     process_all_files_combined(
         directory_path=directory,
-        output_prefix='th_defence_scrub_semi_formal',
+        output_prefix='eng_defence_defensive_prompt',
         per_round_attempts=78,
         total_attempts=390
     )
