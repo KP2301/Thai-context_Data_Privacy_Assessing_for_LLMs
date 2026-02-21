@@ -177,9 +177,9 @@ def plot_clustered_bar_chart(asr_results, range_size, output_path='asr_by_token_
 
 def main():
     # Configuration
-    base_path = r"dea_result\without_defence\final_results\th"
+    base_path = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\scrub\th"
     rounds = ['round1', 'round2', 'round3', 'round4', 'round5']
-    level = "semi_formal"
+    level = "casual"
     subfolder = r"token" + "\\" + level
     
     # Get range size from user

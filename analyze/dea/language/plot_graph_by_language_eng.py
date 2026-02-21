@@ -84,7 +84,7 @@ def create_dea_accuracy_chart(base_folder_path,
         round_number = round_name.lower().replace("round", "")
 
         for model in models:
-            filename = f"eng_{model}_{round_number}.txt"
+            filename = f"dea_output_eng_{model}_300.txt"
             filepath = os.path.join(round_path, filename)
 
             if os.path.exists(filepath):
@@ -134,7 +134,7 @@ def create_dea_accuracy_chart(base_folder_path,
                 ax.text(
                     bar.get_x() + bar.get_width() / 2,
                     bar.get_height(),
-                    f"{val:.2f}%\n({s}/{t})",
+                    f"{val:.2f}%",
                     ha='center',
                     va='bottom',
                     fontsize=8,
@@ -203,5 +203,5 @@ def create_dea_accuracy_chart(base_folder_path,
     print(f"\nกราฟถูกบันทึกเป็นไฟล์: {save_path}")
     plt.show()
 
-base_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\without_defence\final_results\eng"
+base_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\scrub\eng"
 create_dea_accuracy_chart(base_folder, output_filename='dea_accuracy_comparison.png')

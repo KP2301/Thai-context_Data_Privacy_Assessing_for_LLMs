@@ -152,7 +152,7 @@ def plot_clustered_bar_chart(asr_results, range_size, output_path='asr_by_word_c
             height = bar.get_height()
             if height >= 0:
                 ax.text(bar.get_x() + bar.get_width()/2., height,
-                       f'{height:.1f}%',
+                       f'{height:.2f}%',
                        ha='center', va='bottom', fontsize=8, rotation=0)
     
     # Customize chart
@@ -177,9 +177,9 @@ def plot_clustered_bar_chart(asr_results, range_size, output_path='asr_by_word_c
 
 def main():
     # Configuration
-    base_path = r"dea_result\without_defence\final_results\th"
+    base_path = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\scrub\th"
     rounds = ['round1', 'round2', 'round3', 'round4', 'round5']
-    level = "informal"
+    level = "casual"
     subfolder = r"length" + "\\" + level
     
     # Get range size from user
