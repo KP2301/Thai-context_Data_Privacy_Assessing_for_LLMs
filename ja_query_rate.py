@@ -269,11 +269,11 @@ def process_all_files_combined(directory_path, output_prefix='combined', per_rou
         round_name = round_folder.name
         
         # ค้นหาไฟล์ ja_output*.txt ทั้งหมดใน round นี้
-        # ja_files = list(round_folder.glob('semi_formal\ja_output*.txt'))
+        ja_files = list(round_folder.glob('formal\ja_output*.txt'))
         # ja_files = list(round_folder.glob('semi_formal\ja_output*.txt'))
         # ja_files = list(round_folder.glob('semi_formal\ja_output_llama-3.1-8b-instant_semi_formal.txt'))
         # ja_files = list(round_folder.glob('semi_formal\ja_output_moonshotai_kimi-k2-instruct-0905_semi_formal.txt'))
-        ja_files = list(round_folder.glob('semi_formal\ja_output_meta-llama_llama-4-maverick-17b-128e-instruct_semi_formal.txt'))
+        # ja_files = list(round_folder.glob('semi_formal\ja_output_meta-llama_llama-4-maverick-17b-128e-instruct_semi_formal.txt'))
         
         if not ja_files:
             print(f"✗ {round_name} - ไม่พบไฟล์ ja_output*.txt")
@@ -352,11 +352,13 @@ def process_all_files_combined(directory_path, output_prefix='combined', per_rou
         # ตกแต่งกราฟ
         ax.set_xlabel('Position (1-15)', fontsize=13, fontweight='bold')
         ax.set_ylabel('Percentage (%)', fontsize=13, fontweight='bold')
-        ax.set_title(f'Success Indices Distribution - All Models Combined (n={total_attempts})', 
+        # ax.set_title(f'Success Indices Distribution - All Models Combined - Formal after Defensive Prompt (n={total_attempts})', 
+        ax.set_title(f'Success Indices Distribution - All Models Combined without Defence (n={total_attempts})', 
                      fontsize=15, fontweight='bold', pad=20)
         ax.set_xticks(positions)
         ax.set_xticklabels(positions, fontsize=11)
         ax.grid(axis='y', alpha=0.3, linestyle='--')
+        ax.set_ylim(0, 65)
         ax.set_axisbelow(True)
         
         # เพิ่มเส้นค่าเฉลี่ย
@@ -395,12 +397,12 @@ def process_all_files_combined(directory_path, output_prefix='combined', per_rou
 
 if __name__ == "__main__":
     # แบบเก่า - แยกไฟล์ตาม model
-    # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\without_defence\th"
+    directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\without_defence\th"
     # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\scrub\eng"
     # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\defensive_prompt\eng"
     
     # แบบใหม่ - รวมทุกไฟล์ ja_output*.txt (แยกแต่ละรอบ + กราฟรวม)
-    directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\defensive_prompt\th"
+    # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\defensive_prompt\th"
     # process_all_rounds(directory)
     # directory = r"E:\project-Backup\LLM-PBE_VS\ja_result\defence\defensive_prompt\eng"
     
@@ -412,7 +414,7 @@ if __name__ == "__main__":
     # )
     process_all_files_combined(
         directory_path=directory,
-        output_prefix='th_defence_defensive_prompt_semi_formal_meta',
+        output_prefix='th_without_defence_formal_all_model',
         per_round_attempts=78,
         total_attempts=390
     )
