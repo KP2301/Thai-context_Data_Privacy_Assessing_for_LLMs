@@ -15,19 +15,42 @@ def extract_asr_from_file(filepath):
             content = f.read()
 
             asr_match = re.search(
-                r'Overall Success Rate \(ASR\):\s*(\d+\.?\d*)%',
+                # r'Overall Success Rate \(ASR\):\s*(\d+\.?\d*)%',
+                r'ASR\s*\(Success Rate\)\s*:\s*(\d+(?:\.\d+)?)\s*%',
+                content
+            )
+            leaked_match = re.search(
+                # r'Total Success:\s*(\d+)\s*/\s*(\d+)',
+                r'TOTAL\s+LEAKED\s*:\s*(\d+)',
                 content
             )
             total_match = re.search(
-                r'Total Success:\s*(\d+)\s*/\s*(\d+)',
-                content
+                r'TOTAL\s+PROCESSED\s*:\s*(\d+)',
+                content,
+                re.IGNORECASE
             )
 
-            if asr_match and total_match:
+            if asr_match and leaked_match and total_match:
                 asr = float(asr_match.group(1))
-                success = int(total_match.group(1))
-                total = int(total_match.group(2))
+                success = int(leaked_match.group(1))
+                total = int(total_match.group(1))
                 return asr, success, total
+
+            # asr_match = re.search(
+            #     r'Overall Success Rate \(ASR\):\s*(\d+\.?\d*)%',
+            #     content
+            # )
+            # total_match = re.search(
+            #     r'Total Success:\s*(\d+)\s*/\s*(\d+)',
+            #     content
+            # )
+
+            # if asr_match and total_match:
+            #     asr = float(asr_match.group(1))
+            #     success = int(total_match.group(1))
+            #     total = int(total_match.group(2))
+            #     return asr, success, total
+            
     except Exception as e:
         print(f"Error reading {filepath}: {e}")
 
@@ -202,5 +225,5 @@ def create_dea_accuracy_chart(base_folder_path,
         plt.show()
 
 
-base_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\without_defence\final_results\th"
+base_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\scrub\th"
 create_dea_accuracy_chart(base_folder, output_filename='dea_accuracy_comparison_th.png')
