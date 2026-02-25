@@ -79,6 +79,6 @@ level = ["casual", "formal", "informal", "ceremonial", "semi_formal"]
 #         target_folder = f"D:\\CMU\\Y4\\Project\\LLM-PBE_VS\\dea_result\\defence\\defensive_prompt\\th\\round{round}\\language\\{lvl}"
 #         add_token_count_to_report(target_folder)
 
-target_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\defensive_prompt\th\round5\language\casual" 
+target_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\defensive_prompt\th\round1\language\casual" 
 
 add_token_count_to_report(target_folder)

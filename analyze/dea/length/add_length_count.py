@@ -78,5 +78,5 @@ level = ["casual", "formal", "informal", "ceremonial", "semi_formal"]
 #         add_word_count_to_report(target_folder)
 
 # ระบุ Path โฟลเดอร์ที่มีไฟล์ token_counted
-target_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\defensive_prompt\th\round5\language\casual"
+target_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\defensive_prompt\th\round1\language\casual"
 add_word_count_to_report(target_folder)
