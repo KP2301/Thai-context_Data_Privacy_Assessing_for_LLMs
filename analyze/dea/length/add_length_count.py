@@ -72,11 +72,11 @@ def add_word_count_to_report(input_folder_path):
 
 level = ["casual", "formal", "informal", "ceremonial", "semi_formal"]
 
-for round in range(1, 6):
-    for lvl in level: 
-        target_folder = f"D:\\CMU\\Y4\\Project\\LLM-PBE_VS\\dea_result\\defence\\defensive_prompt\\th\\round{round}\\language\\{lvl}"
-        add_word_count_to_report(target_folder)
+# for round in range(1, 6):
+#     for lvl in level: 
+#         target_folder = f"D:\\CMU\\Y4\\Project\\LLM-PBE_VS\\dea_result\\defence\\defensive_prompt\\th\\round{round}\\language\\{lvl}"
+#         add_word_count_to_report(target_folder)
 
 # ระบุ Path โฟลเดอร์ที่มีไฟล์ token_counted
-# target_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\defensive_prompt\th\round1\language"
-# add_word_count_to_report(target_folder)
+target_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\defensive_prompt\th\round5\language\casual"
+add_word_count_to_report(target_folder)

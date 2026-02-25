@@ -74,11 +74,11 @@ def add_token_count_to_report(input_folder_path, model_name="Qwen/Qwen2.5-1.5B")
 
 level = ["casual", "formal", "informal", "ceremonial", "semi_formal"]
 
-for round in range(1, 6):
-    for lvl in level: 
-        target_folder = f"D:\\CMU\\Y4\\Project\\LLM-PBE_VS\\dea_result\\defence\\defensive_prompt\\th\\round{round}\\language\\{lvl}"
-        add_token_count_to_report(target_folder)
+# for round in range(1, 6):
+#     for lvl in level: 
+#         target_folder = f"D:\\CMU\\Y4\\Project\\LLM-PBE_VS\\dea_result\\defence\\defensive_prompt\\th\\round{round}\\language\\{lvl}"
+#         add_token_count_to_report(target_folder)
 
-# target_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\defensive_prompt\th\round1\language\formal" 
+target_folder = r"D:\CMU\Y4\Project\LLM-PBE_VS\dea_result\defence\defensive_prompt\th\round5\language\casual" 
 
-# add_token_count_to_report(target_folder)
+add_token_count_to_report(target_folder)
