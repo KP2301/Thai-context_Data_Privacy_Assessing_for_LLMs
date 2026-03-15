@@ -1,4 +1,4 @@
-# LLM-PBE_VS
+# LLM-TPBE_VS
 
 โปรเจกต์นี้เป็นการศึกษาการโจมตีและป้องกันใน Large Language Models (LLMs) โดยเน้นที่ Data Extraction Attacks (DEA) และ Jailbreak Attacks (JA) รวมถึงการประเมินประสิทธิภาพด้วย metrics ต่างๆ และการวิเคราะห์ผลลัพธ์
 
