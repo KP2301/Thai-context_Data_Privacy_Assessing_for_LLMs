@@ -1,0 +1,15 @@
+groq
+python-dotenv
+jsonlines
+rapidfuzz
+pandas
+transformers
+together
+pythainlp
+python-crfsuite
+spacy
+tqdm
+matplotlib
+numpy
+pygments
+openai

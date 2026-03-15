@@ -1,0 +1,125 @@
+# คู่มือการติดตั้งระบบ LLM-PBE_VS
+
+## ข้อกำหนดระบบ
+- Python 3.8 หรือใหม่กว่า
+- pip (ผู้จัดการแพ็คเกจของ Python)
+- Git (สำหรับ clone repository)
+- ระบบปฏิบัติการ: Windows, Linux, หรือ macOS
+
+## ขั้นตอนการติดตั้ง
+
+### 1. ติดตั้ง Python
+หากยังไม่มี Python ให้ดาวน์โหลดและติดตั้งจากเว็บไซต์ทางการ: https://www.python.org/downloads/
+ตรวจสอบให้แน่ใจว่าได้เลือก "Add Python to PATH" ระหว่างการติดตั้ง
+
+### 2. Clone Repository
+เปิด Command Prompt หรือ Terminal และรันคำสั่งต่อไปนี้:
+
+```bash
+git clone https://github.com/KP2301/LLM-PBE_VS.git
+cd LLM-PBE_VS
+```
+
+### 3. ติดตั้ง Dependencies
+ติดตั้งไลบรารีที่จำเป็นโดยใช้ pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. ดาวน์โหลดโมเดล spaCy
+ดาวน์โหลดโมเดลภาษาอังกฤษสำหรับ spaCy:
+
+```bash
+python -m spacy download en_core_web_sm
+```
+
+### 5. ตั้งค่า Environment Variables
+สร้างไฟล์ชื่อ `.env` ในโฟลเดอร์หลักของโปรเจกต์ และเพิ่ม API keys ดังนี้:
+
+```
+GROQ_API_KEY=your_groq_api_key
+OPENAI_API_KEY=your_openai_api_key
+TOGETHER_API_KEY=your_together_api_key
+```
+
+แทนที่ `your_groq_api_key`, `your_openai_api_key`, และ `your_together_api_key` ด้วย API keys จริงของคุณ
+
+**หมายเหตุ:** อย่าอัปโหลดไฟล์ `.env` ไปยัง repository สาธารณะเพื่อความปลอดภัย
+
+## การทดสอบการติดตั้ง
+
+### 1. ตรวจสอบ Python และ pip
+รันคำสั่งต่อไปนี้เพื่อตรวจสอบ:
+
+```bash
+python --version
+pip --version
+```
+
+### 2. ทดสอบการ import ไลบรารีหลัก
+รัน Python และลอง import ไลบรารี:
+
+```python
+import groq
+import pandas
+import spacy
+print("การติดตั้งสำเร็จ!")
+```
+
+### 3. รันตัวอย่างโปรแกรม
+ลองรันสคริปต์ตัวอย่างเพื่อตรวจสอบว่าทุกอย่างทำงานได้:
+
+```bash
+python dea_with_metric.py
+```
+
+หรือ
+
+```bash
+python ja_with_metric.py
+```
+
+## การใช้งานขั้นสูง
+
+### การใช้ Virtual Environment (แนะนำ)
+เพื่อป้องกันความขัดแย้งของไลบรารี สร้าง virtual environment:
+
+```bash
+python -m venv venv
+venv\Scripts\activate  # บน Windows
+# หรือ source venv/bin/activate บน Linux/Mac
+pip install -r requirements.txt
+```
+
+### การใช้ Conda (ทางเลือก)
+หากใช้ Anaconda หรือ Miniconda:
+
+```bash
+conda create -n llm-pbe python=3.9
+conda activate llm-pbe
+pip install -r requirements.txt
+```
+
+## การแก้ปัญหา
+
+### ปัญหา: ImportError หรือ ModuleNotFoundError
+- ตรวจสอบว่าได้ติดตั้ง dependencies ครบถ้วน
+- ลอง reinstall ไลบรารีที่เกิดปัญหา: `pip install <library-name>`
+
+### ปัญหา: API Key ไม่ทำงาน
+- ตรวจสอบว่า API keys ในไฟล์ `.env` ถูกต้อง
+- ตรวจสอบเครดิตหรือการใช้งาน API
+
+### ปัญหา: spaCy โมเดลไม่พบ
+- รันคำสั่ง: `python -m spacy download en_core_web_sm` อีกครั้ง
+
+## ไลบรารีหลักที่ใช้
+- groq: เชื่อมต่อกับ Groq API
+- transformers: สำหรับ tokenizer และโมเดล
+- pythainlp: ประมวลผลภาษาไทย
+- spacy: Named Entity Recognition
+- matplotlib, numpy: สร้างกราฟ
+- pandas: จัดการข้อมูล
+- tqdm: แสดง progress bar
+- openai, together: เชื่อมต่อ API อื่นๆ
