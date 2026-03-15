@@ -16,8 +16,3 @@ dea_with_metric.py
 
 4.  เมื่อ run ครบจำนวน sample ที่ input 
     ไฟล์ผลการโจมตีอยู่ที่ output/dea/dea_output_เลขจำนวนไฟล์
-    เปลี่ยนชื่อไฟล์เป็น dea_output_ระดับของภาษา_promptเริ่ม_promptสุดท้าย
-    และย้ายไฟล์ไปที่ dea_result/ชนิดการโจมตี/th/modelที่ใช้/ระดับภาษา/dea_output_ระดับของภาษา_model_promptเริ่ม_promptสุดท้าย
-
-5.  ก่อนเริ่ม run อีกครั้งกรุณาลบ prompt ในไฟล์ data/enron/ระดับของภาษา.jsonl ตามจำนวนที่ใช้โจมตี
-6.  และย้าย prompt ที่ใช้แล้วไปไว้ใน data\enron\completed\ระดับภาษา\ระดับภาษา_promptเริ่ม_promptสุดท้าย.jsonl
