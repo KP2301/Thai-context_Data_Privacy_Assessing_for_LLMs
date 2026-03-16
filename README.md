@@ -1,4 +1,4 @@
-# LLM-TPBE_VS
+# Thai-context Data Privacy Assessing for Large Language Models
 
 โปรเจกต์นี้เป็นการศึกษาการโจมตีและป้องกันใน Large Language Models (LLMs) โดยเน้นที่ Data Extraction Attacks (DEA) และ Jailbreak Attacks (JA) รวมถึงการประเมินประสิทธิภาพด้วย metrics ต่างๆ และการวิเคราะห์ผลลัพธ์
 

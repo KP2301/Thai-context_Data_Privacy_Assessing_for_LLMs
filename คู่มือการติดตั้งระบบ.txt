@@ -1,4 +1,4 @@
-# คู่มือการติดตั้งระบบ LLM-PBE_VS
+# คู่มือการติดตั้งระบบ Thai-context Data Privacy Assessing for Large Language Models
 
 ## ข้อกำหนดระบบ
 - Python 3.8 หรือใหม่กว่า
